@@ -1,0 +1,6 @@
+#hover_effect {
+  background: var(--p-color-bg-surface);
+}
+#hover_effect:hover {
+  background: var(--p-color-bg-surface-hover);
+}
