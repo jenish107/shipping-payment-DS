@@ -23,9 +23,7 @@ export default function DeshBord() {
                     </Button>
                     <Button
                       variant="plain"
-                      onClick={() =>
-                        navigat(`/payment-method/${currData.title}`)
-                      }
+                      onClick={() => navigat(`/rules-page/${currData.title}`)}
                     >
                       Configure
                     </Button>

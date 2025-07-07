@@ -17,8 +17,8 @@ function App() {
           <Routes>
             <Route path="/" element={<DeshBord />} />
             <Route path="/test" element={<Test />} />
-            <Route path="/payment-method" element={<CunditionPage />} />
-            <Route path="/payment-method/:id" element={<CunditionPage />} />
+            <Route path="/rules-page/:title" element={<CunditionPage />} />
+            {/* <Route path="/payment-method/:id" element={<CunditionPage />} /> */}
           </Routes>
         </BrowserRouter>
       </AppProvider>

@@ -1,0 +1,161 @@
+import {
+  Badge,
+  BlockStack,
+  Box,
+  Button,
+  Card,
+  ChoiceList,
+  Combobox,
+  Divider,
+  Icon,
+  InlineStack,
+  RadioButton,
+  Select,
+  Text,
+  TextField,
+} from "@shopify/polaris";
+import { DeleteIcon } from "@shopify/polaris-icons";
+
+import React, { useEffect, useState } from "react";
+
+import PaymentMethods from "./PaymentMethods.jsx";
+import ConditionFileds from "./ConditionFileds.jsx";
+import PopoverSelect from "./PopoverSelect.jsx";
+
+const Rules = ({ handleInputChange, ruleData, currData, ruleIndex }) => {
+  const handleCunditionDelete = (field_data) => {
+    const filterCundition = currData.conditions.filter(
+      (currCondition) => currCondition !== field_data
+    );
+    handleInputChange("conditions", filterCundition, ruleIndex, "tiers");
+  };
+
+  const handleRuleDelete = (rule_data) => {
+    const filterCundition = ruleData.tiers.filter(
+      (currRule) => currRule !== rule_data
+    );
+    handleInputChange("tiers", filterCundition);
+  };
+
+  return (
+    <Card padding="0">
+      <Box padding="300" borderBlockEndWidth="025" borderColor="border">
+        <InlineStack align="space-between">
+          <Text variant="headingSm">Rule #{ruleIndex + 1}</Text>
+          {ruleData.tiers.length > 1 && (
+            <Button
+              onClick={() => handleRuleDelete(currData)}
+              variant="plain"
+              tone="critical"
+            >
+              Delete
+            </Button>
+          )}
+        </InlineStack>
+      </Box>
+
+      <Divider />
+
+      <Box padding="300">
+        <BlockStack gap="300">
+          <Text fontWeight="medium">When Match</Text>
+          <InlineStack align="space-between" blockAlign="start">
+            <RadioButton
+              label="And"
+              checked={currData.rule_cundition === "and"}
+              name="rule_cundition"
+              id="test"
+              onChange={() =>
+                handleInputChange("rule_cundition", "and", ruleIndex, "tiers")
+              }
+            />
+            <RadioButton
+              label="Or"
+              helpText="If any one conditions are fulfilled, the validation will be applied."
+              name="rule_cundition"
+              checked={currData.rule_cundition === "or"}
+              onChange={() =>
+                handleInputChange("rule_cundition", "or", ruleIndex, "tiers")
+              }
+            />
+          </InlineStack>
+
+          {currData.conditions.map((currField, index) => {
+            return (
+              <>
+                {index !== 0 && (
+                  <InlineStack wrap={false} align="center" blockAlign="center">
+                    <Box
+                      width="100%"
+                      borderBlockEndWidth="025"
+                      borderColor="border"
+                    ></Box>
+                    <Badge>
+                      {currData.rule_cundition == "and" ? "and" : "or"}
+                    </Badge>
+                    <Box
+                      width="100%"
+                      borderBlockEndWidth="025"
+                      borderColor="border"
+                    ></Box>
+                  </InlineStack>
+                )}
+
+                <Card background="bg-fill-active" key={index}>
+                  <ConditionFileds
+                    currField={currField}
+                    ruleData={ruleData}
+                    ruleIndex={ruleIndex}
+                    handleInputChange={handleInputChange}
+                    currData={currData}
+                    index={index}
+                  />
+                  {currData.conditions.length > 1 && (
+                    <InlineStack>
+                      <Box onClick={() => handleCunditionDelete(currField)}>
+                        <Icon source={DeleteIcon} tone="critical" />
+                      </Box>
+                    </InlineStack>
+                  )}
+                </Card>
+              </>
+            );
+          })}
+        </BlockStack>
+
+        <Box paddingBlock="300">
+          <Divider />
+        </Box>
+
+        <Button
+          variant="primary"
+          onClick={() =>
+            handleInputChange(
+              "conditions",
+              [
+                ...currData.conditions,
+                {
+                  value_1: "",
+                  value: null,
+                  type: "Always",
+                },
+              ],
+              ruleIndex,
+              "tiers"
+            )
+          }
+        >
+          Add Conditon
+        </Button>
+      </Box>
+
+      <PaymentMethods
+        ruleIndex={ruleIndex}
+        ruleData={ruleData}
+        handleInputChange={handleInputChange}
+      />
+    </Card>
+  );
+};
+
+export default Rules;

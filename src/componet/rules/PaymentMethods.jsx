@@ -16,7 +16,7 @@ import {
 
 import "../../style/PaymentMethods.css";
 
-const PaymentMethods = ({ ruleData, handleInputChange }) => {
+const PaymentMethods = ({ ruleData, handleInputChange, ruleIndex }) => {
   const escapeSpecialRegExCharacters = useCallback(
     (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
     []
@@ -26,22 +26,26 @@ const PaymentMethods = ({ ruleData, handleInputChange }) => {
     handleInputChange(
       "payment_method_options",
       conditionFieldsOptions.PaymentMethods,
-      0,
+      ruleIndex,
       "tiers"
     );
   }, []);
 
   const updateText = useCallback(
     (value) => {
-      handleInputChange("payment_method_field_value", value, 0, "tiers");
+      handleInputChange(
+        "payment_method_field_value",
+        value,
+        ruleIndex,
+        "tiers"
+      );
       if (value === "") {
         handleInputChange(
           "payment_method_options",
           conditionFieldsOptions.PaymentMethods,
-          0,
+          ruleIndex,
           "tiers"
         );
-        // setOptions(conditionFieldsOptions.PaymentMethods);
         return;
       }
 
@@ -49,54 +53,64 @@ const PaymentMethods = ({ ruleData, handleInputChange }) => {
       const resultOptions = conditionFieldsOptions.PaymentMethods.filter(
         (option) => option.label.match(filterRegex)
       );
-      handleInputChange("payment_method_options", resultOptions, 0, "tiers");
-
-      // setOptions(resultOptions);
+      handleInputChange(
+        "payment_method_options",
+        resultOptions,
+        ruleIndex,
+        "tiers"
+      );
     },
     [conditionFieldsOptions.PaymentMethods, escapeSpecialRegExCharacters]
   );
 
   const updateSelection = useCallback(
     (selected) => {
-      if (ruleData.tiers[0].payment_method?.includes(selected)) {
-        let selectedValueList = ruleData.tiers[0].payment_method.filter(
+      if (ruleData.tiers[ruleIndex].payment_method?.includes(selected)) {
+        let selectedValueList = ruleData.tiers[ruleIndex].payment_method.filter(
           (option) => option !== selected
         );
 
-        handleInputChange("payment_method", selectedValueList, 0, "tiers");
+        handleInputChange(
+          "payment_method",
+          selectedValueList,
+          ruleIndex,
+          "tiers"
+        );
       } else {
         handleInputChange(
           "payment_method",
-          [...ruleData.tiers[0].payment_method, selected],
-          0,
+          [...ruleData.tiers[ruleIndex].payment_method, selected],
+          ruleIndex,
           "tiers"
         );
       }
 
       updateText("");
     },
-    [ruleData.tiers[0].payment_method, updateText]
+    [ruleData.tiers[ruleIndex].payment_method, updateText]
   );
 
   const removeTag = useCallback(
     (tag) => () => {
-      const options = [...ruleData.tiers[0].payment_method];
+      const options = [...ruleData.tiers[ruleIndex].payment_method];
       options.splice(options.indexOf(tag), 1);
-      handleInputChange("payment_method", options, 0, "tiers");
+      handleInputChange("payment_method", options, ruleIndex, "tiers");
     },
-    [ruleData.tiers[0].payment_method]
+    [ruleData.tiers[ruleIndex].payment_method]
   );
 
   const optionsMarkup =
-    ruleData.tiers[0].payment_method_options?.length > 0
-      ? ruleData.tiers[0].payment_method_options?.map((option) => {
+    ruleData.tiers[ruleIndex].payment_method_options?.length > 0
+      ? ruleData.tiers[ruleIndex].payment_method_options?.map((option) => {
           const { label, value } = option;
 
           return (
             <Listbox.Option
               key={`${value}`}
               value={value}
-              selected={ruleData.tiers[0].payment_method?.includes(value)}
+              selected={ruleData.tiers[ruleIndex].payment_method?.includes(
+                value
+              )}
               accessibilityLabel={label}
             >
               {label}
@@ -114,12 +128,14 @@ const PaymentMethods = ({ ruleData, handleInputChange }) => {
             <RadioButton
               label="Contains"
               name="payment_method_condition"
-              checked={ruleData.tiers[0].payment_method_condition == "Contains"}
+              checked={
+                ruleData.tiers[ruleIndex].payment_method_condition == "Contains"
+              }
               onChange={() =>
                 handleInputChange(
                   "payment_method_condition",
                   "Contains",
-                  0,
+                  ruleIndex,
                   "tiers"
                 )
               }
@@ -131,14 +147,14 @@ const PaymentMethods = ({ ruleData, handleInputChange }) => {
               label="Exact (Case-Sensitive)"
               name="payment_method_condition"
               checked={
-                ruleData.tiers[0].payment_method_condition ==
+                ruleData.tiers[ruleIndex].payment_method_condition ==
                 "Exact (Case-Sensitive)"
               }
               onChange={() =>
                 handleInputChange(
                   "payment_method_condition",
                   "Exact (Case-Sensitive)",
-                  0,
+                  ruleIndex,
                   "tiers"
                 )
               }
@@ -150,13 +166,14 @@ const PaymentMethods = ({ ruleData, handleInputChange }) => {
               label="Exact (Non Case)"
               name="payment_method_condition"
               checked={
-                ruleData.tiers[0].payment_method_condition == "Exact (Non Case)"
+                ruleData.tiers[ruleIndex].payment_method_condition ==
+                "Exact (Non Case)"
               }
               onChange={() =>
                 handleInputChange(
                   "payment_method_condition",
                   "Exact (Non Case)",
-                  0,
+                  ruleIndex,
                   "tiers"
                 )
               }
@@ -172,7 +189,7 @@ const PaymentMethods = ({ ruleData, handleInputChange }) => {
           activator={
             <Combobox.TextField
               onChange={updateText}
-              value={ruleData.tiers[0].payment_method_field_value}
+              value={ruleData.tiers[ruleIndex].payment_method_field_value}
               label="Search tags"
               labelHidden
               placeholder="Search tags"
@@ -187,7 +204,7 @@ const PaymentMethods = ({ ruleData, handleInputChange }) => {
 
         <Box paddingBlockStart="200">
           <Card padding="0">
-            {ruleData.tiers[0].payment_method.map((currItem) => {
+            {ruleData.tiers[ruleIndex].payment_method.map((currItem) => {
               return (
                 <>
                   <Box id="hover_effect" padding="300">

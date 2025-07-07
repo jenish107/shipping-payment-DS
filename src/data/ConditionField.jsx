@@ -204,6 +204,27 @@ export const conditionFields = [
   {
     type: "Specific Collection",
     placeholder: "Select collection",
+    field_type: "popover_select",
+    field_item: [
+      {
+        id: 1,
+        title: "Automated Collection",
+        product: "8 products",
+        product_number: 8765456132,
+      },
+      {
+        id: 2,
+        title: "Home page",
+        product: "1 product",
+        product_number: 897134654,
+      },
+      {
+        id: 3,
+        title: "Hydrogen",
+        product: "3 products",
+        product_number: 64212346,
+      },
+    ],
     options: [
       {
         value: "Contains (partial match)",
@@ -223,6 +244,38 @@ export const conditionFields = [
   {
     type: "Specific Product",
     placeholder: "Select a product",
+    field_type: "popover_select",
+    field_item: [
+      { id: 1, title: "Gift Card", product_number: 4495454435 },
+      { id: 2, title: "Selling Plans Ski Wax", product_number: 432544431 },
+      {
+        id: 3,
+        title: "The 3p Fulfilled Snowboard",
+        product_number: 4488544431,
+      },
+      {
+        id: 4,
+        title: "The Collection Snowboard: Hydrogen",
+        product_number: 4495444987,
+      },
+      {
+        id: 5,
+        title: "The Collection Snowboard: Liquid",
+        product_number: 449674431,
+      },
+      {
+        id: 6,
+        title: "The Collection Snowboard: Oxygen",
+        product_number: 4496694431,
+      },
+      {
+        id: 7,
+        title: "The Compare at Price Snowboard",
+        product_number: 7984544431,
+      },
+      { id: 8, title: "The Complete Snowboard", product_number: 879751325 },
+    ],
+    field_extra_filter: true,
     options: [
       {
         value: "Contains (partial match)",
@@ -281,7 +334,7 @@ export const conditionFields = [
   },
   {
     type: "Delivery Method",
-    field_type: "choice-list",
+    field_type: "choice_list",
     field_option: [
       { label: "Local Delivery", value: "Local Delivery" },
       { label: "None", value: "None" },

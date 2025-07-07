@@ -1,0 +1,19 @@
+#filter_header .Polaris-Filters__FiltersInner {
+  padding: 0;
+  padding-block: 0.4rem;
+}
+#filter_header .Polaris-Filters__FiltersWrapper {
+  border-width: 0;
+}
+
+#resource_list .Polaris-ResourceList__FiltersWrapper {
+  padding-block-end: 0.2rem;
+}
+#padding-12rem {
+  padding-inline: 10rem;
+}
+
+#resource_list .Polaris-ResourceList__ResourceListWrapper {
+  overflow-y: auto;
+  height: 54vh;
+}
