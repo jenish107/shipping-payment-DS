@@ -27,18 +27,39 @@ const PopoverSelect = ({
   index,
   currConditionData,
 }) => {
-  const [selectedItems, setSelectedItems] = useState([]);
-  const [accountStatus, setAccountStatus] = useState(undefined);
+  const [popoverSelectData, setPopoverSelectData] = useState({
+    selectedItems: "",
+    accountStatus: "",
+    field_item: currConditionData.field_item,
+  });
 
-  const handleAccountStatusChange = useCallback(
-    (value) => setAccountStatus(value),
+  const escapeSpecialRegExCharacters = useCallback(
+    (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
     []
   );
-
-  const handleAccountStatusRemove = useCallback(
-    () => setAccountStatus(undefined),
-    []
-  );
+  const handlePopoverInputChange = (
+    name,
+    value,
+    index,
+    dataKey,
+    subDataKey,
+    subIndex
+  ) => {
+    setPopoverSelectData((prevData) => {
+      if (index !== undefined) {
+        const updatedIcon = [...prevData[dataKey]];
+        if (subDataKey !== undefined) {
+          updatedIcon[index][subDataKey][subIndex][name] = value;
+          return { ...prevData, [dataKey]: updatedIcon };
+        } else {
+          updatedIcon[index][name] = value;
+          return { ...prevData, [dataKey]: updatedIcon };
+        }
+      } else {
+        return { ...prevData, [name]: value };
+      }
+    });
+  };
 
   const filters = [
     {
@@ -54,8 +75,8 @@ const PopoverSelect = ({
             { label: "Invited", value: "invited" },
             { label: "Declined", value: "declined" },
           ]}
-          selected={accountStatus || []}
-          onChange={handleAccountStatusChange}
+          selected={popoverSelectData.accountStatus || []}
+          onChange={(val) => handlePopoverInputChange("accountStatus", val)}
           allowMultiple
         />
       ),
@@ -64,19 +85,36 @@ const PopoverSelect = ({
   ];
 
   const appliedFilters = [];
-  if (!isEmpty(accountStatus)) {
+  if (!isEmpty(popoverSelectData.accountStatus)) {
     const key = "accountStatus";
     appliedFilters.push({
       key,
-      label: disambiguateLabel(key, accountStatus),
-      onRemove: handleAccountStatusRemove,
+      label: disambiguateLabel(key, popoverSelectData.accountStatus),
+      onRemove: () => handlePopoverInputChange("accountStatus", ""),
     });
   }
 
+  const updateText = useCallback(
+    (value) => {
+      handlePopoverInputChange("search_field", value);
+
+      if (value === "") {
+        handlePopoverInputChange("field_item", currConditionData.field_item);
+        return;
+      }
+
+      const filterRegex = new RegExp(escapeSpecialRegExCharacters(value), "i");
+      const resultOptions = currConditionData.field_item?.filter((currData) =>
+        currData.title.match(filterRegex)
+      );
+      handlePopoverInputChange("field_item", resultOptions);
+    },
+    [currConditionData.field_item, escapeSpecialRegExCharacters]
+  );
   return (
     <>
       <Box
-        position="absolute"
+        position="fixed"
         minHeight="100vh"
         width="100%"
         insetBlockStart="0"
@@ -95,7 +133,7 @@ const PopoverSelect = ({
               <Box
                 padding="0"
                 background="bg-surface"
-                width="32rem"
+                width="40rem"
                 borderRadius="300"
               >
                 <Box
@@ -116,13 +154,15 @@ const PopoverSelect = ({
                   </InlineStack>
                 </Box>
 
-                <Box minHeight="65vh" id="resource_list">
+                <Box minHeight="75vh" id="resource_list">
                   <ResourceList
                     showHeader={false}
-                    items={currConditionData.field_item}
+                    items={popoverSelectData.field_item}
                     renderItem={renderItem}
-                    selectedItems={selectedItems}
-                    onSelectionChange={setSelectedItems}
+                    selectedItems={popoverSelectData.selectedItems}
+                    onSelectionChange={(value) =>
+                      handlePopoverInputChange("selectedItems", value)
+                    }
                     selectable
                     filterControl={
                       <Box id="filter_header">
@@ -131,39 +171,57 @@ const PopoverSelect = ({
                             <TextField
                               prefix={<Icon source={SearchIcon} tone="base" />}
                               autoComplete="off"
+                              value={popoverSelectData.search_field}
+                              onChange={updateText}
                               placeholder="Search products"
                             />
                           </Box>
 
                           {currConditionData.field_extra_filter && (
-                            <Box minWidth="30%">
+                            <Box minWidth="35%">
                               <Select
                                 labelHidden
                                 options={[
                                   {
                                     label: "All",
-                                    value: "all",
+                                    value: "All",
                                     prefix: (
                                       <Text tone="subdued"> Search by</Text>
                                     ),
                                   },
                                   {
-                                    label: "Title",
-                                    value: "title",
+                                    label: "Product title",
+                                    value: "Product title",
                                     prefix: (
                                       <Text tone="subdued"> Search by</Text>
                                     ),
                                   },
                                   {
-                                    label: "Product number",
-                                    value: "product_number",
+                                    label: "Product ID",
+                                    value: "Product ID",
+                                    prefix: (
+                                      <Text tone="subdued"> Search by</Text>
+                                    ),
+                                  },
+                                  {
+                                    label: "Barcode",
+                                    value: "Barcode",
+                                    prefix: (
+                                      <Text tone="subdued"> Search by</Text>
+                                    ),
+                                  },
+                                  {
+                                    label: "SKU",
+                                    value: "SKU",
                                     prefix: (
                                       <Text tone="subdued"> Search by</Text>
                                     ),
                                   },
                                 ]}
-                                value="all"
-                                onChange={() => {}}
+                                value={popoverSelectData.filter_type}
+                                onChange={(val) => {
+                                  handlePopoverInputChange("filter_type", val);
+                                }}
                               />
                             </Box>
                           )}
@@ -186,7 +244,10 @@ const PopoverSelect = ({
                   borderColor="border"
                 >
                   <InlineStack align="space-between">
-                    <Text>{selectedItems.length} collections selected</Text>
+                    <Text>
+                      {popoverSelectData.selectedItems.length} collections
+                      selected
+                    </Text>
                     <InlineStack gap="200">
                       <Button
                         onClick={() =>
@@ -197,16 +258,17 @@ const PopoverSelect = ({
                       </Button>
                       <Button
                         variant="primary"
-                        onClick={() =>
+                        onClick={() => {
+                          handleInputChange("is_popover_select_show", false);
                           handleInputChange(
                             "value_1",
-                            selectedItems,
+                            popoverSelectData.selectedItems,
                             ruleIndex,
                             "tiers",
                             index,
                             "conditions"
-                          )
-                        }
+                          );
+                        }}
                       >
                         Select
                       </Button>
@@ -222,8 +284,10 @@ const PopoverSelect = ({
   );
 
   function renderItem(item) {
-    const { title, product, product_number } = item;
-    const media = <Thumbnail size="small" alt="Black choker necklace" />;
+    const { title, product, product_number, img } = item;
+    const media = (
+      <Thumbnail size="small" source={img} alt="Black choker necklace" />
+    );
 
     return (
       <ResourceItem
@@ -234,7 +298,12 @@ const PopoverSelect = ({
         <Box
           paddingBlockStart={!product && "200"}
           minHeight="2.5rem"
-          onClick={() => setSelectedItems((pre) => [...pre, product_number])}
+          onClick={() =>
+            handlePopoverInputChange("selectedItems", [
+              ...popoverSelectData.selectedItems,
+              product_number,
+            ])
+          }
         >
           <Text variant="bodyMd" fontWeight={product && "bold"} as="h3">
             {title}

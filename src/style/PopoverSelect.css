@@ -15,5 +15,13 @@
 
 #resource_list .Polaris-ResourceList__ResourceListWrapper {
   overflow-y: auto;
-  height: 54vh;
+  height: 63vh;
+}
+#center_item {
+  margin: 0;
+  position: absolute;
+  top: 21rem;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }

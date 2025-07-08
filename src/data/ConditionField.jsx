@@ -1,73 +1,72 @@
 import { Link, Text } from "@shopify/polaris";
 import { conuntry } from "./Country";
 
+const cartDetailsNumberOption = [
+  {
+    value: "Is greater than or equal to",
+    label: "Is greater than or equal to",
+  },
+  {
+    value: "Is less than or equal to",
+    label: "Is less than or equal to",
+  },
+  { value: "Is between", label: "Is between" },
+];
+
+const stringMatchOptions = [
+  {
+    value: "Contains (partial match)",
+    label: "Contains (partial match)",
+  },
+  {
+    value: "Does not contains (partial match)",
+    label: "Does not contains (partial match)",
+  },
+  { value: "Contains (exact match)", label: "Contains (exact match)" },
+  {
+    value: "Does not contains (exact match)",
+    label: "Does not contains (exact match)",
+  },
+];
+
+const stringMatchMinOptions = [
+  {
+    value: "Contains (partial match)",
+    label: "Contains (partial match)",
+  },
+  {
+    value: "Does not contains (partial match)",
+    label: "Does not contains (partial match)",
+  },
+];
+
 export const conditionFields = [
   {
     type: "Total Amount",
     field_type: "number",
     placeholder: 0,
-    options: [
-      {
-        value: "Is greater than or equal to",
-        label: "Is greater than or equal to",
-      },
-      {
-        value: "Is less than or equal to",
-        label: "Is less than or equal to",
-      },
-      { value: "Is between", label: "Is between" },
-    ],
+    options: cartDetailsNumberOption,
   },
 
   {
     type: "Subtotal Amount",
     field_type: "number",
     placeholder: 0,
-    options: [
-      {
-        value: "Is greater than or equal to",
-        label: "Is greater than or equal to",
-      },
-      {
-        value: "Is less than or equal to",
-        label: "Is less than or equal to",
-      },
-      { value: "Is between", label: "Is between" },
-    ],
+    options: cartDetailsNumberOption,
   },
 
   {
     type: "Total Weight",
     field_type: "number",
     placeholder: 0,
-    options: [
-      {
-        value: "Is greater than or equal to",
-        label: "Is greater than or equal to",
-      },
-      {
-        value: "Is less than or equal to",
-        label: "Is less than or equal to",
-      },
-      { value: "Is between", label: "Is between" },
-    ],
+    options: cartDetailsNumberOption,
   },
 
   {
     type: "Total Quantity",
     field_type: "number",
     placeholder: 0,
-    options: [
-      {
-        value: "Is greater than or equal to",
-        label: "Is greater than or equal to",
-      },
-      {
-        value: "Is less than or equal to",
-        label: "Is less than or equal to",
-      },
-      { value: "Is between", label: "Is between" },
-    ],
+    options: cartDetailsNumberOption,
   },
 
   {
@@ -77,21 +76,7 @@ export const conditionFields = [
       return { value: currData.name, label: currData.name };
     }),
     placeholder: "Select country",
-    options: [
-      {
-        value: "Contains (partial match)",
-        label: "Contains (partial match)",
-      },
-      {
-        value: "Does not contains (partial match)",
-        label: "Does not contains (partial match)",
-      },
-      { value: "Contains (exact match)", label: "Contains (exact match)" },
-      {
-        value: "Does not contains (exact match)",
-        label: "Does not contains (exact match)",
-      },
-    ],
+    options: stringMatchOptions,
   },
 
   {
@@ -104,40 +89,15 @@ export const conditionFields = [
         <Link>ISO 3166-2</Link>
       </Text>
     ),
-    options: [
-      {
-        value: "Contains (partial match)",
-        label: "Contains (partial match)",
-      },
-      {
-        value: "Does not contains (partial match)",
-        label: "Does not contains (partial match)",
-      },
-      { value: "Contains (exact match)", label: "Contains (exact match)" },
-      {
-        value: "Does not contains (exact match)",
-        label: "Does not contains (exact match)",
-      },
-    ],
+    options: stringMatchMinOptions,
   },
   {
     type: "Zip / Postal Code",
     field_type: "combo_box",
     placeholder: "Enter zip/postal code",
     options: [
-      {
-        value: "Contains (partial match)",
-        label: "Contains (partial match)",
-      },
-      {
-        value: "Does not contains (partial match)",
-        label: "Does not contains (partial match)",
-      },
-      { value: "Contains (exact match)", label: "Contains (exact match)" },
-      {
-        value: "Does not contains (exact match)",
-        label: "Does not contains (exact match)",
-      },
+      ...stringMatchOptions,
+      { value: "Zip code match", label: "Zip code match" },
     ],
   },
   {
@@ -145,61 +105,19 @@ export const conditionFields = [
     field_type: "combo_box",
     placeholder: "Enter city or area",
 
-    options: [
-      {
-        value: "Contains (partial match)",
-        label: "Contains (partial match)",
-      },
-      {
-        value: "Does not contains (partial match)",
-        label: "Does not contains (partial match)",
-      },
-      { value: "Contains (exact match)", label: "Contains (exact match)" },
-      {
-        value: "Does not contains (exact match)",
-        label: "Does not contains (exact match)",
-      },
-    ],
+    options: stringMatchOptions,
   },
   {
     type: "Address line",
     field_type: "combo_box",
     placeholder: "Enter full address",
-    options: [
-      {
-        value: "Contains (partial match)",
-        label: "Contains (partial match)",
-      },
-      {
-        value: "Does not contains (partial match)",
-        label: "Does not contains (partial match)",
-      },
-      { value: "Contains (exact match)", label: "Contains (exact match)" },
-      {
-        value: "Does not contains (exact match)",
-        label: "Does not contains (exact match)",
-      },
-    ],
+    options: stringMatchOptions,
   },
   {
     type: "SKU",
     field_type: "combo_box",
     placeholder: "Enter SKU",
-    options: [
-      {
-        value: "Contains (partial match)",
-        label: "Contains (partial match)",
-      },
-      {
-        value: "Does not contains (partial match)",
-        label: "Does not contains (partial match)",
-      },
-      { value: "Contains (exact match)", label: "Contains (exact match)" },
-      {
-        value: "Does not contains (exact match)",
-        label: "Does not contains (exact match)",
-      },
-    ],
+    options: stringMatchOptions,
   },
   {
     type: "Specific Collection",
@@ -225,28 +143,19 @@ export const conditionFields = [
         product_number: 64212346,
       },
     ],
-    options: [
-      {
-        value: "Contains (partial match)",
-        label: "Contains (partial match)",
-      },
-      {
-        value: "Does not contains (partial match)",
-        label: "Does not contains (partial match)",
-      },
-      { value: "Contains (exact match)", label: "Contains (exact match)" },
-      {
-        value: "Does not contains (exact match)",
-        label: "Does not contains (exact match)",
-      },
-    ],
+    options: stringMatchMinOptions,
   },
   {
     type: "Specific Product",
     placeholder: "Select a product",
     field_type: "popover_select",
     field_item: [
-      { id: 1, title: "Gift Card", product_number: 4495454435 },
+      {
+        id: 1,
+        title: "Gift Card",
+        img: "https://cdn.shopify.com/s/files/1/0683/5021/4300/files/gift_card_200x200.png?v=1746253056",
+        product_number: 4495454435,
+      },
       { id: 2, title: "Selling Plans Ski Wax", product_number: 432544431 },
       {
         id: 3,
@@ -276,61 +185,19 @@ export const conditionFields = [
       { id: 8, title: "The Complete Snowboard", product_number: 879751325 },
     ],
     field_extra_filter: true,
-    options: [
-      {
-        value: "Contains (partial match)",
-        label: "Contains (partial match)",
-      },
-      {
-        value: "Does not contains (partial match)",
-        label: "Does not contains (partial match)",
-      },
-      { value: "Contains (exact match)", label: "Contains (exact match)" },
-      {
-        value: "Does not contains (exact match)",
-        label: "Does not contains (exact match)",
-      },
-    ],
+    options: stringMatchMinOptions,
   },
   {
     type: "Customer Tag",
     field_type: "combo_box",
     placeholder: "Enter customer tag",
-    options: [
-      {
-        value: "Contains (partial match)",
-        label: "Contains (partial match)",
-      },
-      {
-        value: "Does not contains (partial match)",
-        label: "Does not contains (partial match)",
-      },
-      { value: "Contains (exact match)", label: "Contains (exact match)" },
-      {
-        value: "Does not contains (exact match)",
-        label: "Does not contains (exact match)",
-      },
-    ],
+    options: stringMatchOptions,
   },
   {
     type: "Selected Shipping Rate",
     field_type: "combo_box",
     placeholder: "Enter Shipping title",
-    options: [
-      {
-        value: "Contains (partial match)",
-        label: "Contains (partial match)",
-      },
-      {
-        value: "Does not contains (partial match)",
-        label: "Does not contains (partial match)",
-      },
-      { value: "Contains (exact match)", label: "Contains (exact match)" },
-      {
-        value: "Does not contains (exact match)",
-        label: "Does not contains (exact match)",
-      },
-    ],
+    options: stringMatchOptions,
   },
   {
     type: "Delivery Method",
@@ -347,20 +214,6 @@ export const conditionFields = [
       { label: "Retail", value: "Retail" },
     ],
     placeholder: "Enter delivery method",
-    options: [
-      {
-        value: "Contains (partial match)",
-        label: "Contains (partial match)",
-      },
-      {
-        value: "Does not contains (partial match)",
-        label: "Does not contains (partial match)",
-      },
-      { value: "Contains (exact match)", label: "Contains (exact match)" },
-      {
-        value: "Does not contains (exact match)",
-        label: "Does not contains (exact match)",
-      },
-    ],
+    options: stringMatchMinOptions,
   },
 ];
