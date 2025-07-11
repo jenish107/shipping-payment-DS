@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { conditionFieldsOptions } from "../../data/RulesPageOptions";
+import { conditionFieldsOptions } from "../../data/ConditionFieldsOptions";
 import { conditionFields } from "../../data/ConditionField";
 import {
   Box,
@@ -9,7 +9,6 @@ import {
   TextField,
 } from "@shopify/polaris";
 import CustomComboBox from "./CustomComboBox";
-import PopoverSelect from "./PopoverSelect";
 
 const ConditionFileds = ({
   handleInputChange,
@@ -26,7 +25,6 @@ const ConditionFileds = ({
     } else {
       document.body.style.overflow = "";
     }
-    console.log("document.body---------");
     return () => {
       document.body.style.overflow = "";
     };
@@ -41,8 +39,9 @@ const ConditionFileds = ({
     handleInputChange("value_1", "", ruleIndex, "tiers", index, "conditions");
     handleInputChange("value", null, ruleIndex, "tiers", index, "conditions");
   }, [currField.type]);
+
   return (
-    <>
+    <Box key={`conditionFields${index}`}>
       <InlineStack gap="300" wrap={false}>
         <Box width="100%">
           <Select
@@ -156,7 +155,7 @@ const ConditionFileds = ({
           </Box>
         )}
       </InlineStack>
-    </>
+    </Box>
   );
 };
 

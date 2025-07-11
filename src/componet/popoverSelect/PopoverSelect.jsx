@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   ChoiceList,
+  Combobox,
   Divider,
   Filters,
   Icon,
@@ -19,6 +20,23 @@ import { Text } from "@shopify/polaris";
 import { ImageIcon, PlusIcon, SearchIcon, XIcon } from "@shopify/polaris-icons";
 
 import "../../style/PopoverSelect.css";
+import PopoverSelectFilter from "./PopoverSelectFilter";
+
+const tags = [
+  { label: "Accessory", value: "Accessory" },
+  { label: "Archived", value: "Archived" },
+  { label: "Premium", value: "Premium" },
+  { label: "Snow", value: "Snow" },
+  { label: "Snowboard", value: "Snowboard" },
+  { label: "Sport", value: "Sport" },
+  { label: "Winter", value: "Winter" },
+];
+
+const collection = [
+  { value: "Automated Collection", label: "Automated Collection" },
+  { value: "Home page", label: "Home page" },
+  { value: "Hydrogen", label: "Hydrogen" },
+];
 
 const PopoverSelect = ({
   handleInputChange,
@@ -30,6 +48,9 @@ const PopoverSelect = ({
   const [popoverSelectData, setPopoverSelectData] = useState({
     selectedItems: "",
     accountStatus: "",
+    filter_type: "all",
+    tags_option: tags,
+    collection_option: collection,
     field_item: currConditionData.field_item,
   });
 
@@ -61,29 +82,6 @@ const PopoverSelect = ({
     });
   };
 
-  const filters = [
-    {
-      key: "accountStatus",
-      label: "Account status",
-      filter: (
-        <ChoiceList
-          title="Account status"
-          titleHidden
-          choices={[
-            { label: "Enabled", value: "enabled" },
-            { label: "Not invited", value: "not invited" },
-            { label: "Invited", value: "invited" },
-            { label: "Declined", value: "declined" },
-          ]}
-          selected={popoverSelectData.accountStatus || []}
-          onChange={(val) => handlePopoverInputChange("accountStatus", val)}
-          allowMultiple
-        />
-      ),
-      shortcut: true,
-    },
-  ];
-
   const appliedFilters = [];
   if (!isEmpty(popoverSelectData.accountStatus)) {
     const key = "accountStatus";
@@ -104,21 +102,27 @@ const PopoverSelect = ({
       }
 
       const filterRegex = new RegExp(escapeSpecialRegExCharacters(value), "i");
-      const resultOptions = currConditionData.field_item?.filter((currData) =>
-        currData.title.match(filterRegex)
-      );
+      const resultOptions = currConditionData.field_item?.filter((currData) => {
+        switch (popoverSelectData.filter_type) {
+          case "all":
+            return (
+              currData.title.match(filterRegex) ||
+              currData.product_number?.toString().match(filterRegex)
+            );
+          case "product_title":
+            return currData.title.match(filterRegex);
+          default:
+            return false;
+        }
+      });
       handlePopoverInputChange("field_item", resultOptions);
     },
     [currConditionData.field_item, escapeSpecialRegExCharacters]
   );
+
   return (
     <>
-      <Box
-        position="fixed"
-        minHeight="100vh"
-        width="100%"
-        insetBlockStart="0"
-      >
+      <Box position="fixed" minHeight="100vh" width="100%" insetBlockStart="0">
         <Box background="bg-fill-critical-hover" position="relative">
           <Box
             width="100%"
@@ -184,35 +188,35 @@ const PopoverSelect = ({
                                 options={[
                                   {
                                     label: "All",
-                                    value: "All",
+                                    value: "all",
                                     prefix: (
                                       <Text tone="subdued"> Search by</Text>
                                     ),
                                   },
                                   {
                                     label: "Product title",
-                                    value: "Product title",
+                                    value: "product_title",
                                     prefix: (
                                       <Text tone="subdued"> Search by</Text>
                                     ),
                                   },
                                   {
                                     label: "Product ID",
-                                    value: "Product ID",
+                                    value: "product_id",
                                     prefix: (
                                       <Text tone="subdued"> Search by</Text>
                                     ),
                                   },
                                   {
                                     label: "Barcode",
-                                    value: "Barcode",
+                                    value: "barcode",
                                     prefix: (
                                       <Text tone="subdued"> Search by</Text>
                                     ),
                                   },
                                   {
                                     label: "SKU",
-                                    value: "SKU",
+                                    value: "sku",
                                     prefix: (
                                       <Text tone="subdued"> Search by</Text>
                                     ),
@@ -227,10 +231,15 @@ const PopoverSelect = ({
                           )}
                         </InlineStack>
                         {currConditionData.field_extra_filter && (
-                          <Filters
-                            hideQueryField
-                            filters={filters}
-                            appliedFilters={appliedFilters}
+                          <PopoverSelectFilter
+                            escapeSpecialRegExCharacters={
+                              escapeSpecialRegExCharacters
+                            }
+                            currConditionData={currConditionData}
+                            tags={tags}
+                            collection={collection}
+                            popoverSelectData={popoverSelectData}
+                            handlePopoverInputChange={handlePopoverInputChange}
                           />
                         )}
                       </Box>

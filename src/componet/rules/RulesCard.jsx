@@ -18,11 +18,17 @@ import { DeleteIcon } from "@shopify/polaris-icons";
 
 import React, { useEffect, useState } from "react";
 
-import PaymentMethods from "./PaymentMethods.jsx";
 import ConditionFileds from "./ConditionFileds.jsx";
-import PopoverSelect from "./PopoverSelect.jsx";
+import PaymentAndShippingMethods from "../paymentAndShippingMethod/PaymentAndShippingMethods.jsx";
+import { conditionFieldsOptions } from "../../data/ConditionFieldsOptions.jsx";
 
-const Rules = ({ handleInputChange, ruleData, currData, ruleIndex }) => {
+const RulesCard = ({
+  handleInputChange,
+  ruleData,
+  currData,
+  ruleIndex,
+  currDisplayData,
+}) => {
   const handleCunditionDelete = (field_data) => {
     const filterCundition = currData.conditions.filter(
       (currCondition) => currCondition !== field_data
@@ -38,7 +44,7 @@ const Rules = ({ handleInputChange, ruleData, currData, ruleIndex }) => {
   };
 
   return (
-    <Card padding="0">
+    <Card padding="0" key={`RulesCard${ruleIndex}`}>
       <Box padding="300" borderBlockEndWidth="025" borderColor="border">
         <InlineStack align="space-between">
           <Text variant="headingSm">Rule #{ruleIndex + 1}</Text>
@@ -82,7 +88,7 @@ const Rules = ({ handleInputChange, ruleData, currData, ruleIndex }) => {
 
           {currData.conditions.map((currField, index) => {
             return (
-              <>
+              <Box key={`conditionFields-${index}`}>
                 {index !== 0 && (
                   <InlineStack wrap={false} align="center" blockAlign="center">
                     <Box
@@ -118,7 +124,7 @@ const Rules = ({ handleInputChange, ruleData, currData, ruleIndex }) => {
                     </InlineStack>
                   )}
                 </Card>
-              </>
+              </Box>
             );
           })}
         </BlockStack>
@@ -149,13 +155,91 @@ const Rules = ({ handleInputChange, ruleData, currData, ruleIndex }) => {
         </Button>
       </Box>
 
-      <PaymentMethods
-        ruleIndex={ruleIndex}
-        ruleData={ruleData}
-        handleInputChange={handleInputChange}
-      />
+      <Box background="bg-fill-active">
+        {currDisplayData?.display?.includes("discount-adder") && (
+          <Box padding="300">
+            <InlineStack wrap={false} gap="200">
+              <Box width="100%">
+                <Select
+                  options={[
+                    { value: "Fix", label: "Fix" },
+                    { value: "percentage", label: "percentage" },
+                  ]}
+                  label="Discount type"
+                  onChange={(val) => handleInputChange("discount_type", val)}
+                  value={ruleData.discount_type}
+                />
+              </Box>
+              <Box width="100%">
+                <TextField
+                  placeholder="0"
+                  label="Value"
+                  onChange={(val) =>
+                    handleInputChange("discount_type_value", val)
+                  }
+                  value={ruleData.discount_type_value}
+                />
+              </Box>
+            </InlineStack>
+          </Box>
+        )}
+
+        {currDisplayData?.display?.includes("message-position-display") ? (
+          <Box padding="300">
+            <BlockStack gap="200">
+              <Select
+                label="Then block checkout and show a error message"
+                options={conditionFieldsOptions.error_message_position}
+                onChange={(val) =>
+                  handleInputChange(
+                    "show_error_message",
+                    val,
+                    ruleIndex,
+                    "tiers"
+                  )
+                }
+                helpText="Where to show the error message on the checkout page"
+                value={currData.show_error_message}
+              />
+
+              <Box paddingBlock="100">
+                <Divider />
+              </Box>
+              <Text variant="headingMd">Message to display</Text>
+              <Text>
+                This message will be displayed to customers who fail validation.
+              </Text>
+
+              <TextField
+                label={
+                  <InlineStack gap="100">
+                    <Text>English </Text>
+                    <Badge tone="success">Primary</Badge>
+                  </InlineStack>
+                }
+                value={currData.error_message}
+                onChange={(val) =>
+                  handleInputChange("error_message", val, ruleIndex, "tiers")
+                }
+              />
+            </BlockStack>
+          </Box>
+        ) : (
+          <PaymentAndShippingMethods
+            method={
+              currDisplayData?.display?.includes("payment-method-adder")
+                ? "payment_method"
+                : "shipping_method"
+            }
+            currDisplayData={currDisplayData}
+            ruleIndex={ruleIndex}
+            ruleData={ruleData}
+            handleInputChange={handleInputChange}
+          />
+        )}
+      </Box>
     </Card>
   );
 };
 
-export default Rules;
+export default RulesCard;

@@ -2,17 +2,20 @@ import {
   BlockStack,
   Box,
   Button,
+  ButtonGroup,
   Card,
+  ChoiceList,
   Divider,
   Page,
   Select,
   Text,
   TextField,
 } from "@shopify/polaris";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import RulesCard from "./rules/RulesCard.jsx";
-import PopoverSelect from "./rules/PopoverSelect.jsx";
+import PopoverSelect from "./popoverSelect/PopoverSelect.jsx";
+import { dashBordData } from "../data/DashBordData.jsx";
 
 const CunditionPage = () => {
   const [ruleData, setRuleData] = useState({
@@ -27,52 +30,63 @@ const CunditionPage = () => {
         ],
         payment_method_options: [
           {
-            label: "Cash on Delivery (COD)",
+            key: "Cash on Delivery (COD)",
             value: "Cash on Delivery (COD)",
           },
           {
-            label: "Bank Deposit",
+            key: "Bank Deposit",
             value: "Bank Deposit",
           },
           {
-            label: "Money Order",
+            key: "Money Order",
             value: "Money Order",
           },
           {
-            label: "Shopify Payments",
+            key: "Shopify Payments",
             value: "Shopify Payments",
           },
           {
-            label: "Stripe",
+            key: "Stripe",
             value: "Stripe",
           },
           {
-            label: "Gift card",
+            key: "Gift card",
             value: "Gift card",
           },
           {
-            label: "Redeemable payment method",
+            key: "Redeemable payment method",
             value: "Redeemable payment method",
           },
           {
-            label: "PayPal",
+            key: "PayPal",
             value: "PayPal",
           },
           {
-            label: "PayPal Express Checkout",
+            key: "PayPal Express Checkout",
             value: "PayPal Express Checkout",
           },
           {
-            label: "Amazon Pay",
+            key: "Amazon Pay",
             value: "Amazon Pay",
           },
         ],
+        rule_type: "basic",
         payment_method_condition: "Contains",
         payment_method_field_value: "",
       },
     ],
   });
+  const [currDisplayData, setCurrDisplayData] = useState();
   const params = useParams();
+
+  // console.log("this is dashbord dat", currDisplayData);
+  useEffect(() => {
+    setCurrDisplayData(
+      dashBordData.find((currItem) => {
+        return currItem.title == params.title;
+      })
+    );
+  }, [params]);
 
   const handleInputChange = (
     name,
@@ -111,6 +125,7 @@ const CunditionPage = () => {
       }
     });
   };
+
   return (
     <>
       <Page compactTitle>
@@ -131,12 +146,36 @@ const CunditionPage = () => {
                 { label: "Active", value: "active" },
               ]}
             />
+
+            {currDisplayData?.display?.includes("discount-code") && (
+              <TextField
+                onChange={(v) => handleInputChange("discount_code", v)}
+                value={ruleData?.discount_code}
+                label="Discount code"
+              />
+            )}
           </Card>
 
           <Card>
             <Text variant="headingMd" as="h6">
               Rules
             </Text>
+
+            <ButtonGroup variant="segmented">
+              <Button
+                pressed={ruleData.rule_type === "basic"}
+                onClick={() => handleInputChange("rule_type", "basic")}
+              >
+                Basic
+              </Button>
+              <Button
+                pressed={ruleData.rule_type === "advance"}
+                onClick={() => handleInputChange("rule_type", "advance")}
+              >
+                Advance
+              </Button>
+            </ButtonGroup>
+
             <Box paddingBlock="300">
               <Divider />
             </Box>
@@ -145,6 +184,7 @@ const CunditionPage = () => {
               {ruleData.tiers.map((currData, ruleIndex) => {
                 return (
                   <RulesCard
+                    currDisplayData={currDisplayData}
                     currData={currData}
                     key={ruleIndex}
                     ruleIndex={ruleIndex}
@@ -170,6 +210,27 @@ const CunditionPage = () => {
               Add another rule
             </Button>
           </Card>
+
+          {currDisplayData?.display?.includes("discount-combiner") && (
+            <Card>
+              <ChoiceList
+                allowMultiple
+                title="This discount can be combined with:"
+                choices={[
+                  {
+                    label: "Product discounts",
+                    value: "product_discount",
+                  },
+                  {
+                    label: "Order discounts",
+                    value: "order_discount",
+                  },
+                ]}
+                selected={ruleData.discount_type || "none"}
+                onChange={(val) => handleInputChange("discount_combine", val)}
+              />
+            </Card>
+          )}
         </BlockStack>
       </Page>
 
