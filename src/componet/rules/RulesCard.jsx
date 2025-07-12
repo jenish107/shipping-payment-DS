@@ -109,6 +109,7 @@ const RulesCard = ({
 
                 <Card background="bg-fill-active" key={index}>
                   <ConditionFileds
+                    currDisplayData={currDisplayData}
                     currField={currField}
                     ruleData={ruleData}
                     ruleIndex={ruleIndex}

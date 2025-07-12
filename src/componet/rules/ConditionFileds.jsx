@@ -9,6 +9,7 @@ import {
   TextField,
 } from "@shopify/polaris";
 import CustomComboBox from "./CustomComboBox";
+import { dashBordData, options } from "../../data/DashBordData";
 
 const ConditionFileds = ({
   handleInputChange,
@@ -16,6 +17,7 @@ const ConditionFileds = ({
   index,
   ruleData,
   ruleIndex,
+  currDisplayData,
 }) => {
   const [currConditionData, setCurrConditionData] = useState();
 
@@ -38,6 +40,14 @@ const ConditionFileds = ({
 
     handleInputChange("value_1", "", ruleIndex, "tiers", index, "conditions");
     handleInputChange("value", null, ruleIndex, "tiers", index, "conditions");
+    handleInputChange(
+      "condition",
+      null,
+      ruleIndex,
+      "tiers",
+      index,
+      "conditions"
+    );
   }, [currField.type]);
 
   return (
@@ -46,7 +56,7 @@ const ConditionFileds = ({
         <Box width="100%">
           <Select
             label="Type"
-            options={conditionFieldsOptions.Type.Options}
+            options={currDisplayData?.Type?.Options}
             onChange={(value) => {
               handleInputChange(
                 "type",

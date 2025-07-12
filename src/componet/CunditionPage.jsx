@@ -15,7 +15,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import RulesCard from "./rules/RulesCard.jsx";
 import PopoverSelect from "./popoverSelect/PopoverSelect.jsx";
-import { dashBordData } from "../data/DashBordData.jsx";
+import { AdvanceOptions, dashBordData } from "../data/DashBordData.jsx";
 
 const CunditionPage = () => {
   const [ruleData, setRuleData] = useState({
@@ -70,16 +70,42 @@ const CunditionPage = () => {
             value: "Amazon Pay",
           },
         ],
-        rule_type: "basic",
         payment_method_condition: "Contains",
         payment_method_field_value: "",
       },
     ],
+    rule_type: "basic",
   });
   const [currDisplayData, setCurrDisplayData] = useState();
   const params = useParams();
 
-  // console.log("this is dashbord dat", currDisplayData);
+  useEffect(() => {
+    if (currDisplayData == undefined) {
+      return;
+    }
+
+    if (ruleData.rule_type == "basic") {
+      setCurrDisplayData((pre) => {
+        return {
+          ...pre,
+          Type: {
+            ...pre.Type,
+            Options: dashBordData.find(
+              (currData) => currData.title == "Hide Shipping Methods"
+            ).Type.Options,
+          },
+        };
+      });
+    } else {
+      setCurrDisplayData((pre) => {
+        return {
+          ...pre,
+          Type: { ...pre.Type, Options: AdvanceOptions },
+        };
+      });
+    }
+  }, [ruleData?.rule_type]);
+
   useEffect(() => {
     setCurrDisplayData(
       dashBordData.find((currItem) => {
@@ -161,20 +187,22 @@ const CunditionPage = () => {
               Rules
             </Text>
 
-            <ButtonGroup variant="segmented">
-              <Button
-                pressed={ruleData.rule_type === "basic"}
-                onClick={() => handleInputChange("rule_type", "basic")}
-              >
-                Basic
-              </Button>
-              <Button
-                pressed={ruleData.rule_type === "advance"}
-                onClick={() => handleInputChange("rule_type", "advance")}
-              >
-                Advance
-              </Button>
-            </ButtonGroup>
+            {currDisplayData?.display?.includes("rule-type-select") && (
+              <ButtonGroup variant="segmented">
+                <Button
+                  pressed={ruleData.rule_type === "basic"}
+                  onClick={() => handleInputChange("rule_type", "basic")}
+                >
+                  Basic
+                </Button>
+                <Button
+                  pressed={ruleData.rule_type === "advance"}
+                  onClick={() => handleInputChange("rule_type", "advance")}
+                >
+                  Advance
+                </Button>
+              </ButtonGroup>
+            )}
 
             <Box paddingBlock="300">
               <Divider />
