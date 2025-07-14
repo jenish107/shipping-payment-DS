@@ -7,7 +7,6 @@ import DeshBord from "./componet/DashBord";
 
 import { BrowserRouter, Routes, Route } from "react-router";
 import CunditionPage from "./componet/CunditionPage.jsx";
-import Test from "./test/Test.jsx";
 
 function App() {
   return (
@@ -16,9 +15,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<DeshBord />} />
-            <Route path="/test" element={<Test />} />
             <Route path="/rules-page/:title" element={<CunditionPage />} />
-            {/* <Route path="/payment-method/:id" element={<CunditionPage />} /> */}
           </Routes>
         </BrowserRouter>
       </AppProvider>

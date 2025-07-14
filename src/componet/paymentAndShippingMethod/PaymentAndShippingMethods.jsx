@@ -254,9 +254,10 @@ const PaymentAndShippingMethods = ({
                 />
               }
             >
-              <>
+              {currDisplayData?.display.includes("payment-method-adder") ? (
                 <Listbox onSelect={updateSelection}>
                   {optionsMarkup}
+
                   {ruleData.tiers[ruleIndex][field_name] !== "" && (
                     <Listbox.Option
                       value={ruleData.tiers[ruleIndex][field_name]}
@@ -270,13 +271,16 @@ const PaymentAndShippingMethods = ({
                     </Listbox.Option>
                   )}
                 </Listbox>
-              </>
+              ): null}
             </Combobox>
           </Box>
 
           {currDisplayData?.display.includes("shipping-method-adder") && (
             <Box minWidth="10rem">
               <Button
+                disabled={
+                  !ruleData.tiers[ruleIndex].shipping_method_field_value
+                }
                 variant="primary"
                 onClick={() =>
                   updateSelection(

@@ -218,6 +218,10 @@ const RulesCard = ({
               "tiers"
             )
           }
+          disabled={
+            currData.conditions[0].type == "Always" ||
+            currData.conditions[0].type == undefined
+          }
         >
           Add Conditon
         </Button>
