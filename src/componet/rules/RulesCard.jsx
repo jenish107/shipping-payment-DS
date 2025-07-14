@@ -52,10 +52,18 @@ const RulesCard = ({
     let conditionTemp = currData.conditions;
 
     if (type == "move_up") {
+      if (currRuleIndex == 0) {
+        return;
+      }
+
       let temp = conditionTemp[currRuleIndex];
       conditionTemp[currRuleIndex] = conditionTemp[currRuleIndex - 1];
       conditionTemp[currRuleIndex - 1] = temp;
     } else {
+      if (currRuleIndex == conditionTemp.length) {
+        return;
+      }
+
       let temp = conditionTemp[currRuleIndex];
       conditionTemp[currRuleIndex] = conditionTemp[currRuleIndex + 1];
       conditionTemp[currRuleIndex + 1] = temp;
