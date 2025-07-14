@@ -14,8 +14,10 @@ const CustomComboBox = ({
   index,
   currConditionData,
 }) => {
-  const { placeholder, field_type, options, combo_box_option } =
+  const { placeholder, field_type, options, combo_box_option, placeholder_2 } =
     currConditionData;
+
+  const [comboBoxValue, setComboBoxValue] = useState("");
   const [suggestionOptions, setSuggestionOptions] = useState(
     combo_box_option || null
   );
@@ -25,22 +27,15 @@ const CustomComboBox = ({
   );
 
   useEffect(() => {
-    if (!ruleData.tiers[ruleIndex].conditions[index].value_1) {
-      handleInputChange("value_1", [], ruleIndex, "tiers", index, "conditions");
+    if (!ruleData.tiers[ruleIndex].conditions[index].value) {
+      handleInputChange("value", [], ruleIndex, "tiers", index, "conditions");
     }
     setSuggestionOptions(combo_box_option);
   }, [ruleData.tiers[ruleIndex].conditions[index].type, combo_box_option]);
 
   const updateText = useCallback(
     (value) => {
-      handleInputChange(
-        "value",
-        value,
-        ruleIndex,
-        "tiers",
-        index,
-        "conditions"
-      );
+      setComboBoxValue(value);
 
       if (value === "") {
         setSuggestionOptions(combo_box_option);
@@ -51,6 +46,7 @@ const CustomComboBox = ({
       const resultOptions = combo_box_option?.filter((option) =>
         option.label.match(filterRegex)
       );
+
       setSuggestionOptions(resultOptions);
     },
     [combo_box_option, escapeSpecialRegExCharacters]
@@ -59,14 +55,14 @@ const CustomComboBox = ({
   const updateSelection = useCallback(
     (selected) => {
       if (
-        ruleData.tiers[ruleIndex].conditions[index].value_1?.includes(selected)
+        ruleData.tiers[ruleIndex].conditions[index].value?.includes(selected)
       ) {
         let selectedValueList = ruleData.tiers[ruleIndex].conditions[
           index
-        ].value_1.filter((option) => option !== selected);
+        ].value.filter((option) => option !== selected);
 
         handleInputChange(
-          "value_1",
+          "value",
           selectedValueList,
           ruleIndex,
           "tiers",
@@ -75,8 +71,8 @@ const CustomComboBox = ({
         );
       } else {
         handleInputChange(
-          "value_1",
-          [...ruleData.tiers[ruleIndex].conditions[index].value_1, selected],
+          "value",
+          [...ruleData.tiers[ruleIndex].conditions[index].value, selected],
           ruleIndex,
           "tiers",
           index,
@@ -90,10 +86,10 @@ const CustomComboBox = ({
 
   const removeTag = useCallback(
     (tag) => () => {
-      const options = [...ruleData.tiers[ruleIndex].conditions[index].value_1];
+      const options = [...ruleData.tiers[ruleIndex].conditions[index].value];
       options.splice(options.indexOf(tag), 1);
       handleInputChange(
-        "value_1",
+        "value",
         options,
         ruleIndex,
         "tiers",
@@ -101,7 +97,7 @@ const CustomComboBox = ({
         "conditions"
       );
     },
-    [ruleData.tiers[ruleIndex].conditions[index].value_1]
+    [ruleData.tiers[ruleIndex].conditions[index].value]
   );
 
   const optionsMarkup =
@@ -115,7 +111,7 @@ const CustomComboBox = ({
               value={value}
               selected={ruleData.tiers[ruleIndex].conditions[
                 index
-              ].value_1?.includes(value)}
+              ].value?.includes(value)}
               accessibilityLabel={label}
             >
               {label}
@@ -125,9 +121,9 @@ const CustomComboBox = ({
       : null;
 
   const verticalContentMarkup =
-    ruleData.tiers[ruleIndex].conditions[index].value_1?.length > 0 ? (
+    ruleData.tiers[ruleIndex].conditions[index].value?.length > 0 ? (
       <InlineStack spacing="extraTight" gap="200" alignment="center">
-        {ruleData.tiers[ruleIndex].conditions[index].value_1.map((tag) => (
+        {ruleData.tiers[ruleIndex].conditions[index].value.map((tag) => (
           <Tag key={`option-${tag}`} onRemove={removeTag(tag)}>
             {tag}
           </Tag>
@@ -162,10 +158,14 @@ const CustomComboBox = ({
           }
           onBlur={!combo_box_option && ((e) => updateSelection(e.target.value))}
           onChange={updateText}
-          value={ruleData.tiers[ruleIndex].conditions[index].value}
+          value={comboBoxValue}
           label="Search tags"
           labelHidden
-          placeholder={placeholder}
+          placeholder={
+            currConditionData?.type == "Cart Attribute"
+              ? placeholder_2
+              : placeholder
+          }
           autoComplete="off"
           verticalContent={verticalContentMarkup}
         />

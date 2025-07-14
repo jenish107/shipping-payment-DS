@@ -188,20 +188,22 @@ const CunditionPage = () => {
             </Text>
 
             {currDisplayData?.display?.includes("rule-type-select") && (
-              <ButtonGroup variant="segmented">
-                <Button
-                  pressed={ruleData.rule_type === "basic"}
-                  onClick={() => handleInputChange("rule_type", "basic")}
-                >
-                  Basic
-                </Button>
-                <Button
-                  pressed={ruleData.rule_type === "advance"}
-                  onClick={() => handleInputChange("rule_type", "advance")}
-                >
-                  Advance
-                </Button>
-              </ButtonGroup>
+              <Box paddingBlockStart="300">
+                <ButtonGroup variant="segmented">
+                  <Button
+                    pressed={ruleData.rule_type === "basic"}
+                    onClick={() => handleInputChange("rule_type", "basic")}
+                  >
+                    Basic
+                  </Button>
+                  <Button
+                    pressed={ruleData.rule_type === "advance"}
+                    onClick={() => handleInputChange("rule_type", "advance")}
+                  >
+                    Advance
+                  </Button>
+                </ButtonGroup>
+              </Box>
             )}
 
             <Box paddingBlock="300">

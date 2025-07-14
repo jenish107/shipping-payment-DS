@@ -48,7 +48,13 @@ export const options = {
 
 export const AdvanceOptions = [
   options.cart_details_always,
-  options.cart_details,
+  {
+    title: "Cart Details",
+    options: [
+      { value: "Total Amount", label: "Total Amount" },
+      { value: "Cart Attribute", label: "Cart Attribute" },
+    ],
+  },
   {
     ...options.address,
     options: options.address.options.slice(0, 1),

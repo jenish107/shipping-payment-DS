@@ -27,7 +27,6 @@ const MethodsList = ({
   handleInputChange,
 }) => {
   const ListItem = ({ currItem, index }) => {
-    // console.log("curr item -===================", currItem,index);
     return (
       <InlineStack
         blockAlign={
@@ -115,8 +114,6 @@ const MethodsList = ({
     const oldIndex = items.findIndex((item) => item.key === active.id);
     const newIndex = items.findIndex((item) => item.key === over.id);
     const newList = arrayMove(items, oldIndex, newIndex);
-
-    console.log("action and over =--------------", oldIndex, newIndex);
 
     handleInputChange(list_name, newList, ruleIndex, "tiers");
   };

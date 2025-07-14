@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { conditionFieldsOptions } from "../../data/ConditionFieldsOptions";
-import { conditionFields } from "../../data/ConditionField";
+import { conditionFields } from "../../data/ConditionFieldData";
 import {
   Box,
   ChoiceList,
@@ -70,6 +70,7 @@ const ConditionFileds = ({
             value={currField?.type}
           />
         </Box>
+
         {currConditionData?.options && (
           <Box width="100%">
             <Select
@@ -129,10 +130,10 @@ const ConditionFileds = ({
               allowMultiple
               title="Delivery Method Type"
               choices={currConditionData?.field_option}
-              selected={currField?.value_1}
+              selected={currField?.value}
               onChange={(value) =>
                 handleInputChange(
-                  "value_1",
+                  "value",
                   value,
                   ruleIndex,
                   "tiers",
@@ -152,7 +153,7 @@ const ConditionFileds = ({
               placeholder={currConditionData?.placeholder}
               onChange={(value) =>
                 handleInputChange(
-                  "value_2",
+                  "value_1",
                   value,
                   ruleIndex,
                   "tiers",
@@ -161,6 +162,18 @@ const ConditionFileds = ({
                 )
               }
               value={currField?.value_2}
+            />
+          </Box>
+        )}
+
+        {currConditionData?.type == "Cart Attribute" && (
+          <Box paddingBlockStart="200" width="100%">
+            <CustomComboBox
+              ruleIndex={ruleIndex}
+              index={index}
+              handleInputChange={handleInputChange}
+              ruleData={ruleData}
+              currConditionData={currConditionData}
             />
           </Box>
         )}

@@ -248,6 +248,13 @@ export const conditionFields = [
     options: stringMatchOptions,
   },
   {
+    type: "Cart Attribute",
+    field_type: "text",
+    placeholder: "Key",
+    placeholder_2: "valuel,value2",
+    options: stringMatchOptions,
+  },
+  {
     type: "Delivery Method",
     field_type: "choice_list",
     field_option: [

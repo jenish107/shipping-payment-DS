@@ -3,6 +3,7 @@ import {
   BlockStack,
   Box,
   Button,
+  ButtonGroup,
   Card,
   ChoiceList,
   Combobox,
@@ -14,7 +15,11 @@ import {
   Text,
   TextField,
 } from "@shopify/polaris";
-import { DeleteIcon } from "@shopify/polaris-icons";
+import {
+  ChevronDownIcon,
+  ChevronUpIcon,
+  DeleteIcon,
+} from "@shopify/polaris-icons";
 
 import React, { useEffect, useState } from "react";
 
@@ -43,6 +48,22 @@ const RulesCard = ({
     handleInputChange("tiers", filterCundition);
   };
 
+  const handleButtonUpDownClick = (currRuleIndex, type) => {
+    let conditionTemp = currData.conditions;
+
+    if (type == "move_up") {
+      let temp = conditionTemp[currRuleIndex];
+      conditionTemp[currRuleIndex] = conditionTemp[currRuleIndex - 1];
+      conditionTemp[currRuleIndex - 1] = temp;
+    } else {
+      let temp = conditionTemp[currRuleIndex];
+      conditionTemp[currRuleIndex] = conditionTemp[currRuleIndex + 1];
+      conditionTemp[currRuleIndex + 1] = temp;
+    }
+
+    handleInputChange("conditions", conditionTemp);
+  };
+
   return (
     <Card padding="0" key={`RulesCard${ruleIndex}`}>
       <Box padding="300" borderBlockEndWidth="025" borderColor="border">
@@ -64,47 +85,67 @@ const RulesCard = ({
 
       <Box padding="300">
         <BlockStack gap="300">
-          <Text fontWeight="medium">When Match</Text>
-          <InlineStack align="space-between" blockAlign="start">
-            <RadioButton
-              label="And"
-              checked={currData.rule_cundition === "and"}
-              name="rule_cundition"
-              id="test"
-              onChange={() =>
-                handleInputChange("rule_cundition", "and", ruleIndex, "tiers")
-              }
-            />
-            <RadioButton
-              label="Or"
-              helpText="If any one conditions are fulfilled, the validation will be applied."
-              name="rule_cundition"
-              checked={currData.rule_cundition === "or"}
-              onChange={() =>
-                handleInputChange("rule_cundition", "or", ruleIndex, "tiers")
-              }
-            />
-          </InlineStack>
+          {currData.conditions.length > 1 && (
+            <>
+              <Text fontWeight="medium">When Match</Text>
+              <InlineStack align="space-between" blockAlign="start">
+                <RadioButton
+                  label="And"
+                  checked={currData.rule_cundition === "and"}
+                  name="rule_cundition"
+                  id="test"
+                  onChange={() =>
+                    handleInputChange(
+                      "rule_cundition",
+                      "and",
+                      ruleIndex,
+                      "tiers"
+                    )
+                  }
+                />
+                <RadioButton
+                  label="Or"
+                  helpText="If any one conditions are fulfilled, the validation will be applied."
+                  name="rule_cundition"
+                  checked={currData.rule_cundition === "or"}
+                  onChange={() =>
+                    handleInputChange(
+                      "rule_cundition",
+                      "or",
+                      ruleIndex,
+                      "tiers"
+                    )
+                  }
+                />
+              </InlineStack>
+            </>
+          )}
 
           {currData.conditions.map((currField, index) => {
             return (
               <Box key={`conditionFields-${index}`}>
                 {index !== 0 && (
-                  <InlineStack wrap={false} align="center" blockAlign="center">
-                    <Box
-                      width="100%"
-                      borderBlockEndWidth="025"
-                      borderColor="border"
-                    ></Box>
-                    <Badge>
-                      {currData.rule_cundition == "and" ? "and" : "or"}
-                    </Badge>
-                    <Box
-                      width="100%"
-                      borderBlockEndWidth="025"
-                      borderColor="border"
-                    ></Box>
-                  </InlineStack>
+                  <Box paddingBlockEnd="200">
+                    <InlineStack
+                      wrap={false}
+                      align="center"
+                      blockAlign="center"
+                    >
+                      <Box
+                        width="100%"
+                        borderBlockEndWidth="025"
+                        borderColor="border"
+                      ></Box>
+                      <Badge>
+                        {currData.rule_cundition == "and" ? "and" : "or"}
+                      </Badge>
+                      <Box
+                        width="100%"
+                        borderBlockEndWidth="025"
+                        borderColor="border"
+                      ></Box>
+                    </InlineStack>
+                  </Box>
                 )}
 
                 <Card background="bg-fill-active" key={index}>
@@ -118,7 +159,25 @@ const RulesCard = ({
                     index={index}
                   />
                   {currData.conditions.length > 1 && (
-                    <InlineStack>
+                    <InlineStack align="space-between" blockAlign="center">
+                      <ButtonGroup>
+                        <Button
+                          icon={ChevronUpIcon}
+                          onClick={() =>
+                            handleButtonUpDownClick(index, "move_up")
+                          }
+                        >
+                          Move Up
+                        </Button>
+                        <Button
+                          icon={ChevronDownIcon}
+                          onClick={() =>
+                            handleButtonUpDownClick(index, "move_down")
+                          }
+                        >
+                          Move Down
+                        </Button>
+                      </ButtonGroup>
                       <Box onClick={() => handleCunditionDelete(currField)}>
                         <Icon source={DeleteIcon} tone="critical" />
                       </Box>

@@ -63,6 +63,7 @@ const PaymentAndShippingMethods = ({
         const resultOptions = conditionFieldsOptions.PaymentMethods.filter(
           (option) => option.label.match(filterRegex)
         );
+
         setPaymentOption(resultOptions);
       }
     },
@@ -253,9 +254,23 @@ const PaymentAndShippingMethods = ({
                 />
               }
             >
-              {optionsMarkup ? (
-                <Listbox onSelect={updateSelection}>{optionsMarkup}</Listbox>
-              ) : null}
+              <>
+                <Listbox onSelect={updateSelection}>
+                  {optionsMarkup}
+                  {ruleData.tiers[ruleIndex][field_name] !== "" && (
+                    <Listbox.Option
+                      value={ruleData.tiers[ruleIndex][field_name]}
+                    >
+                      <Box paddingInlineStart="300">
+                        <Button>
+                          Add “{ruleData.tiers[ruleIndex][field_name]}” as
+                          Payment Method
+                        </Button>
+                      </Box>
+                    </Listbox.Option>
+                  )}
+                </Listbox>
+              </>
             </Combobox>
           </Box>
 

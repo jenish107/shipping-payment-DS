@@ -270,7 +270,7 @@ const PopoverSelect = ({
                         onClick={() => {
                           handleInputChange("is_popover_select_show", false);
                           handleInputChange(
-                            "value_1",
+                            "value",
                             popoverSelectData.selectedItems,
                             ruleIndex,
                             "tiers",
