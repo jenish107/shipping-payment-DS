@@ -97,7 +97,7 @@ const RulesCard = ({
               <InlineStack align="space-between" blockAlign="start">
                 <RadioButton
                   label="And"
-                  checked={currData.rule_cundition === "and"}
+                  checked={currData?.rule_cundition === "and"}
                   name="rule_cundition"
                   id="test"
                   onChange={() =>
@@ -113,7 +113,7 @@ const RulesCard = ({
                   label="Or"
                   helpText="If any one conditions are fulfilled, the validation will be applied."
                   name="rule_cundition"
-                  checked={currData.rule_cundition === "or"}
+                  checked={currData?.rule_cundition === "or"}
                   onChange={() =>
                     handleInputChange(
                       "rule_cundition",

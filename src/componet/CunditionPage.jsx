@@ -73,6 +73,7 @@ const CunditionPage = () => {
         ],
         payment_method_condition: "Contains",
         payment_method_field_value: "",
+        rule_cundition: "and",
       },
     ],
     rule_type: "basic",
@@ -166,7 +167,7 @@ const CunditionPage = () => {
 
             <Select
               onChange={(v) => handleInputChange("Status", v)}
-              value={ruleData?.Title}
+              value={ruleData?.Status}
               label="Status"
               options={[
                 { label: "Inactive", value: "Inactive" },

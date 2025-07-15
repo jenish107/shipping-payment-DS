@@ -50,7 +50,7 @@ const ConditionFileds = ({
   }, [currField.type]);
 
   return (
-    <Box key={`conditionFields${index}`}>
+    <Box key={`conditionFields${index}`} paddingBlockEnd="200">
       <InlineStack gap="300" wrap={false}>
         <Box width="100%">
           <Select

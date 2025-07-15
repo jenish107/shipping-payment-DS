@@ -39,7 +39,6 @@ const PopoverSelectFilter = ({
           allowMultiple
         />
       ),
-      pinned: true,
       shortcut: true,
     },
     {
@@ -67,7 +66,6 @@ const PopoverSelectFilter = ({
           />
         </>
       ),
-      pinned: true,
       shortcut: true,
     },
     {
@@ -87,7 +85,6 @@ const PopoverSelectFilter = ({
           allowMultiple
         />
       ),
-      pinned: true,
       shortcut: true,
     },
     {
@@ -111,7 +108,6 @@ const PopoverSelectFilter = ({
           />
         </>
       ),
-      pinned: true,
       shortcut: true,
     },
     {
@@ -132,7 +128,6 @@ const PopoverSelectFilter = ({
           allowMultiple
         />
       ),
-      pinned: true,
     },
   ];
 
@@ -175,7 +170,7 @@ const PopoverSelectFilter = ({
 
     if (popoverSelectData.vendors?.length > 0) {
       resultOptions = resultOptions?.filter((currData) => {
-        return currData.vendor?.includes(popoverSelectData.vendors);
+        return popoverSelectData.vendors?.includes(currData.vendor);
       });
     }
 
@@ -186,6 +181,8 @@ const PopoverSelectFilter = ({
     popoverSelectData.types,
     popoverSelectData.tags,
     popoverSelectData.vendors,
+    currConditionData.field_item,
+    handlePopoverInputChange,
   ]);
 
   const appliedFilters = [];
