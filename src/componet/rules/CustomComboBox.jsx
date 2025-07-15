@@ -128,11 +128,12 @@ const CustomComboBox = ({
   const verticalContentMarkup =
     ruleData.tiers[ruleIndex].conditions[index].value?.length > 0 ? (
       <InlineStack spacing="extraTight" gap="200" alignment="center">
-        {ruleData.tiers[ruleIndex].conditions[index].value?.map((tag) => (
-          <Tag key={`option-${tag}`} onRemove={removeTag(tag)}>
-            {tag}
-          </Tag>
-        ))}
+        {Array.isArray(ruleData.tiers[ruleIndex].conditions[index].value) &&
+          ruleData.tiers[ruleIndex].conditions[index].value?.map((tag) => (
+            <Tag key={`option-${tag}`} onRemove={removeTag(tag)}>
+              {tag}
+            </Tag>
+          ))}
       </InlineStack>
     ) : null;
 

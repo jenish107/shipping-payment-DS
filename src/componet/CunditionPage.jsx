@@ -260,7 +260,7 @@ const CunditionPage = () => {
                     value: "order_discount",
                   },
                 ]}
-                selected={ruleData.discount_type || "none"}
+                selected={ruleData.discount_combine || "none"}
                 onChange={(val) => handleInputChange("discount_combine", val)}
               />
             </Card>
