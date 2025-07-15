@@ -26,15 +26,9 @@ const CunditionPage = () => {
         conditions: [
           {
             value_1: "",
-            value: 111111111,
+            value: "",
             condition: null,
-            type: "Subtotal Amount",
-          },
-          {
-            value_1: "",
-            value: 555555555,
-            type: "Total Amount",
-            condition: null,
+            type: "Always",
           },
         ],
         payment_method_options: [
