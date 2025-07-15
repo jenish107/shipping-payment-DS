@@ -17,6 +17,7 @@ const ConditionFileds = ({
   ruleData,
   ruleIndex,
   currDisplayData,
+  handleButtonUpDownClick,
 }) => {
   const [currConditionData, setCurrConditionData] = useState();
 
@@ -36,6 +37,10 @@ const ConditionFileds = ({
       (currItem) => currItem.type == currField?.type
     );
     setCurrConditionData(result);
+  }, [handleButtonUpDownClick, currField?.type]);
+
+  const handleTypeChange = (value) => {
+    handleInputChange("type", value, ruleIndex, "tiers", index, "conditions");
 
     handleInputChange("value_1", "", ruleIndex, "tiers", index, "conditions");
     handleInputChange("value", null, ruleIndex, "tiers", index, "conditions");
@@ -47,7 +52,7 @@ const ConditionFileds = ({
       index,
       "conditions"
     );
-  }, [currField.type]);
+  };
 
   return (
     <Box key={`conditionFields${index}`} paddingBlockEnd="200">
@@ -56,16 +61,7 @@ const ConditionFileds = ({
           <Select
             label="Type"
             options={currDisplayData?.Type?.Options}
-            onChange={(value) => {
-              handleInputChange(
-                "type",
-                value,
-                ruleIndex,
-                "tiers",
-                index,
-                "conditions"
-              );
-            }}
+            onChange={(value) => handleTypeChange(value)}
             value={currField?.type}
           />
         </Box>
@@ -101,7 +97,7 @@ const ConditionFileds = ({
               placeholder={currConditionData?.placeholder}
               onChange={(value) =>
                 handleInputChange(
-                  "value",
+                  currField?.type == "Cart Attribute" ? "key" : "value",
                   value,
                   ruleIndex,
                   "tiers",
@@ -109,7 +105,11 @@ const ConditionFileds = ({
                   "conditions"
                 )
               }
-              value={currField?.value}
+              value={
+                currField?.type == "Cart Attribute"
+                  ? currField?.key
+                  : currField.value
+              }
             />
           )}
 
@@ -160,7 +160,7 @@ const ConditionFileds = ({
                   "conditions"
                 )
               }
-              value={currField?.value_2}
+              value={currField?.value_1}
             />
           </Box>
         )}

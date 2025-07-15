@@ -58,7 +58,7 @@ const RulesCard = ({
       conditionTemp[currRuleIndex] = conditionTemp?.[currRuleIndex - 1];
       conditionTemp[currRuleIndex - 1] = temp;
     } else {
-      if (currRuleIndex == conditionTemp.length) {
+      if (currRuleIndex == conditionTemp.length - 1) {
         return;
       }
 
@@ -66,8 +66,9 @@ const RulesCard = ({
       conditionTemp[currRuleIndex] = conditionTemp[currRuleIndex + 1];
       conditionTemp[currRuleIndex + 1] = temp;
     }
+    console.table(conditionTemp);
 
-    handleInputChange("conditions", conditionTemp);
+    handleInputChange("conditions", conditionTemp, ruleIndex, "tiers");
   };
 
   return (
@@ -156,6 +157,7 @@ const RulesCard = ({
 
                 <Card background="bg-fill-active" key={index}>
                   <ConditionFileds
+                    handleButtonUpDownClick={handleButtonUpDownClick}
                     currDisplayData={currDisplayData}
                     currField={currField}
                     ruleData={ruleData}

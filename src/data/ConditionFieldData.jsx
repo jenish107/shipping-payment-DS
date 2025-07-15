@@ -104,7 +104,6 @@ export const conditionFields = [
     type: "City / Area",
     field_type: "combo_box",
     placeholder: "Enter city or area",
-
     options: stringMatchOptions,
   },
   {

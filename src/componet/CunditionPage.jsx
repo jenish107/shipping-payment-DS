@@ -26,7 +26,15 @@ const CunditionPage = () => {
         conditions: [
           {
             value_1: "",
-            value: null,
+            value: 111111111,
+            condition: null,
+            type: "Subtotal Amount",
+          },
+          {
+            value_1: "",
+            value: 555555555,
+            type: "Total Amount",
+            condition: null,
           },
         ],
         payment_method_options: [
@@ -213,7 +221,7 @@ const CunditionPage = () => {
             </Box>
 
             <BlockStack gap="200">
-              {ruleData.tiers.map((currData, ruleIndex) => {
+              {ruleData.tiers?.map((currData, ruleIndex) => {
                 return (
                   <RulesCard
                     currDisplayData={currDisplayData}

@@ -139,51 +139,7 @@ const PopoverSelectFilter = ({
     handlePopoverInputChange("vendors", "");
   }, [handlePopoverInputChange]);
 
-  useEffect(() => {
-    let resultOptions = currConditionData.field_item;
-
-    if (popoverSelectData.categories?.length > 0) {
-      resultOptions = resultOptions?.filter((currData) => {
-        return currData.category?.includes(popoverSelectData.categories[0]);
-      });
-    }
-
-    if (popoverSelectData.collection?.length > 0) {
-      resultOptions = resultOptions?.filter((currData) => {
-        return currData.collections?.includes(popoverSelectData.collection[0]);
-      });
-    }
-
-    if (popoverSelectData.types?.length > 0) {
-      resultOptions = resultOptions?.filter((currData) => {
-        return popoverSelectData.types?.includes(currData.type);
-      });
-    }
-
-    if (popoverSelectData.tags?.length > 0) {
-      resultOptions = resultOptions?.filter((currData) => {
-        return popoverSelectData.tags.some((currTag) =>
-          currData.tags?.includes(currTag)
-        );
-      });
-    }
-
-    if (popoverSelectData.vendors?.length > 0) {
-      resultOptions = resultOptions?.filter((currData) => {
-        return popoverSelectData.vendors?.includes(currData.vendor);
-      });
-    }
-
-    handlePopoverInputChange("field_item", resultOptions);
-  }, [
-    popoverSelectData.categories,
-    popoverSelectData.collection,
-    popoverSelectData.types,
-    popoverSelectData.tags,
-    popoverSelectData.vendors,
-    currConditionData.field_item,
-    handlePopoverInputChange,
-  ]);
+ 
 
   const appliedFilters = [];
   if (!isEmpty(popoverSelectData.categories)) {

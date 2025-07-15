@@ -101,22 +101,39 @@ const CustomComboBox = ({
     [ruleData.tiers[ruleIndex].conditions[index].value]
   );
 
+  console.log(
+    "ruleData.tiers[ruleIndex].conditions[index].value -------",
+    ruleData.tiers[ruleIndex].conditions
+  );
+  console.log(
+    "ruleData.tiers[ruleIndex].conditions[index].value -------",
+    ruleIndex
+  );
+
+  console.log(
+    "ruleData.tiers[ruleIndex].conditions[index].value -------",
+    index
+  );
   const optionsMarkup =
     suggestionOptions?.length > 0
       ? suggestionOptions?.map((option) => {
           const { label, value } = option;
 
           return (
-            <Listbox.Option
-              key={`${value}`}
-              value={value}
-              selected={ruleData.tiers[ruleIndex].conditions[
-                index
-              ].value?.includes(value)}
-              accessibilityLabel={label}
-            >
-              {label}
-            </Listbox.Option>
+            Array.isArray(
+              ruleData.tiers[ruleIndex].conditions[index].value
+            ) && (
+              <Listbox.Option
+                key={`${value}`}
+                value={value}
+                selected={ruleData.tiers[ruleIndex].conditions[
+                  index
+                ].value?.includes(value)}
+                accessibilityLabel={label}
+              >
+                {label}
+              </Listbox.Option>
+            )
           );
         })
       : null;
@@ -124,7 +141,7 @@ const CustomComboBox = ({
   const verticalContentMarkup =
     ruleData.tiers[ruleIndex].conditions[index].value?.length > 0 ? (
       <InlineStack spacing="extraTight" gap="200" alignment="center">
-        {ruleData.tiers[ruleIndex].conditions[index].value.map((tag) => (
+        {ruleData.tiers[ruleIndex].conditions[index].value?.map((tag) => (
           <Tag key={`option-${tag}`} onRemove={removeTag(tag)}>
             {tag}
           </Tag>

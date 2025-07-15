@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import {
   Box,
@@ -46,12 +46,14 @@ const PopoverSelect = ({
     tags_option: tags,
     collection_option: collection,
     field_item: currConditionData.field_item,
+    search_field: "",
   });
 
   const escapeSpecialRegExCharacters = useCallback(
     (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
     []
   );
+
   const handlePopoverInputChange = (
     name,
     value,
@@ -86,33 +88,76 @@ const PopoverSelect = ({
     });
   }
 
-  const updateText = useCallback(
-    (value) => {
-      handlePopoverInputChange("search_field", value);
+  useEffect(() => {
+    let resultOptions = currConditionData.field_item;
 
-      if (value === "") {
-        handlePopoverInputChange("field_item", currConditionData.field_item);
-        return;
-      }
-
-      const filterRegex = new RegExp(escapeSpecialRegExCharacters(value), "i");
-      const resultOptions = currConditionData.field_item?.filter((currData) => {
-        switch (popoverSelectData.filter_type) {
-          case "all":
-            return (
-              currData.title.match(filterRegex) ||
-              currData.product_number?.toString().match(filterRegex)
-            );
-          case "product_title":
-            return currData.title.match(filterRegex);
-          default:
-            return false;
-        }
+    if (popoverSelectData.categories?.length > 0) {
+      resultOptions = resultOptions?.filter((currData) => {
+        return currData.category?.includes(popoverSelectData.categories[0]);
       });
-      handlePopoverInputChange("field_item", resultOptions);
-    },
-    [currConditionData.field_item, escapeSpecialRegExCharacters]
-  );
+    }
+
+    if (popoverSelectData.collection?.length > 0) {
+      resultOptions = resultOptions?.filter((currData) => {
+        return currData.collections?.includes(popoverSelectData.collection[0]);
+      });
+    }
+
+    if (popoverSelectData.types?.length > 0) {
+      resultOptions = resultOptions?.filter((currData) => {
+        return popoverSelectData.types?.includes(currData.type);
+      });
+    }
+
+    if (popoverSelectData.tags?.length > 0) {
+      resultOptions = resultOptions?.filter((currData) => {
+        return popoverSelectData.tags.some((currTag) =>
+          currData.tags?.includes(currTag)
+        );
+      });
+    }
+
+    if (popoverSelectData.vendors?.length > 0) {
+      resultOptions = resultOptions?.filter((currData) => {
+        return popoverSelectData.vendors?.includes(currData.vendor);
+      });
+    }
+
+    const filterRegex = new RegExp(
+      escapeSpecialRegExCharacters(popoverSelectData.search_field),
+      "i"
+    );
+    resultOptions = resultOptions?.filter((currData) => {
+      switch (popoverSelectData.filter_type) {
+        case "all":
+          return (
+            currData.title.match(filterRegex) ||
+            currData.product_number?.toString().match(filterRegex)
+          );
+        case "product_title":
+          return currData.title.match(filterRegex);
+        default:
+          return true;
+      }
+    });
+
+    handlePopoverInputChange("field_item", resultOptions);
+  }, [
+    popoverSelectData.categories,
+    popoverSelectData.collection,
+    popoverSelectData.types,
+    popoverSelectData.tags,
+    popoverSelectData.vendors,
+    popoverSelectData.search_field,
+    popoverSelectData.filter_type,
+    currConditionData.field_item,
+    handlePopoverInputChange,
+    escapeSpecialRegExCharacters,
+  ]);
+
+  const updateText = useCallback((value) => {
+    handlePopoverInputChange("search_field", value);
+  }, []);
 
   return (
     <Box position="fixed" minHeight="100vh" width="100%" insetBlockStart="0">
