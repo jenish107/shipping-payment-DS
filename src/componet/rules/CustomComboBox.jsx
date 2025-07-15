@@ -101,19 +101,6 @@ const CustomComboBox = ({
     [ruleData.tiers[ruleIndex].conditions[index].value]
   );
 
-  console.log(
-    "ruleData.tiers[ruleIndex].conditions[index].value -------",
-    ruleData.tiers[ruleIndex].conditions
-  );
-  console.log(
-    "ruleData.tiers[ruleIndex].conditions[index].value -------",
-    ruleIndex
-  );
-
-  console.log(
-    "ruleData.tiers[ruleIndex].conditions[index].value -------",
-    index
-  );
   const optionsMarkup =
     suggestionOptions?.length > 0
       ? suggestionOptions?.map((option) => {
