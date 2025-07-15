@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { conditionFieldsOptions } from "../../data/ConditionFieldsOptions";
-import { conditionFields } from "../../data/ConditionFieldData";
+
 import {
   Box,
   ChoiceList,
@@ -8,8 +7,8 @@ import {
   Select,
   TextField,
 } from "@shopify/polaris";
+import { conditionFields } from "../../data/ConditionFieldData";
 import CustomComboBox from "./CustomComboBox";
-import { dashBordData, options } from "../../data/DashBordData";
 
 const ConditionFileds = ({
   handleInputChange,

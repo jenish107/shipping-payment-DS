@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+
 import {
   AutoSelection,
   Combobox,
@@ -14,7 +15,7 @@ const CustomComboBox = ({
   index,
   currConditionData,
 }) => {
-  const { placeholder, field_type, options, combo_box_option, placeholder_2 } =
+  const { placeholder, field_type, combo_box_option, placeholder_2 } =
     currConditionData;
 
   const [comboBoxValue, setComboBoxValue] = useState("");

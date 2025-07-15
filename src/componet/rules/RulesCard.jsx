@@ -1,3 +1,5 @@
+import React from "react";
+
 import {
   Badge,
   BlockStack,
@@ -5,8 +7,6 @@ import {
   Button,
   ButtonGroup,
   Card,
-  ChoiceList,
-  Combobox,
   Divider,
   Icon,
   InlineStack,
@@ -21,11 +21,9 @@ import {
   DeleteIcon,
 } from "@shopify/polaris-icons";
 
-import React, { useEffect, useState } from "react";
-
-import ConditionFileds from "./ConditionFileds.jsx";
-import PaymentAndShippingMethods from "../paymentAndShippingMethod/PaymentAndShippingMethods.jsx";
 import { conditionFieldsOptions } from "../../data/ConditionFieldsOptions.jsx";
+import PaymentAndShippingMethods from "../paymentAndShippingMethod/PaymentAndShippingMethods.jsx";
+import ConditionFileds from "./ConditionFileds.jsx";
 
 const RulesCard = ({
   handleInputChange,
@@ -57,7 +55,7 @@ const RulesCard = ({
       }
 
       let temp = conditionTemp[currRuleIndex];
-      conditionTemp[currRuleIndex] = conditionTemp[currRuleIndex - 1];
+      conditionTemp[currRuleIndex] = conditionTemp?.[currRuleIndex - 1];
       conditionTemp[currRuleIndex - 1] = temp;
     } else {
       if (currRuleIndex == conditionTemp.length) {
@@ -143,7 +141,7 @@ const RulesCard = ({
                         width="100%"
                         borderBlockEndWidth="025"
                         borderColor="border"
-                      ></Box>
+                      />
                       <Badge>
                         {currData.rule_cundition == "and" ? "and" : "or"}
                       </Badge>
@@ -151,7 +149,7 @@ const RulesCard = ({
                         width="100%"
                         borderBlockEndWidth="025"
                         borderColor="border"
-                      ></Box>
+                      />
                     </InlineStack>
                   </Box>
                 )}
@@ -277,6 +275,7 @@ const RulesCard = ({
               <Box paddingBlock="100">
                 <Divider />
               </Box>
+
               <Text variant="headingMd">Message to display</Text>
               <Text>
                 This message will be displayed to customers who fail validation.

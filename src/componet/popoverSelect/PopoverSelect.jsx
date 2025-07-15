@@ -1,23 +1,18 @@
+import React, { useCallback, useState } from "react";
+
 import {
-  BlockStack,
   Box,
   Button,
-  ChoiceList,
-  Combobox,
-  Divider,
-  Filters,
   Icon,
   InlineStack,
-  RangeSlider,
   ResourceItem,
   ResourceList,
   Select,
+  Text,
   TextField,
   Thumbnail,
 } from "@shopify/polaris";
-import React, { useCallback, useState } from "react";
-import { Text } from "@shopify/polaris";
-import { ImageIcon, PlusIcon, SearchIcon, XIcon } from "@shopify/polaris-icons";
+import { SearchIcon, XIcon } from "@shopify/polaris-icons";
 
 import "../../style/PopoverSelect.css";
 import PopoverSelectFilter from "./PopoverSelectFilter";
@@ -41,7 +36,6 @@ const collection = [
 const PopoverSelect = ({
   handleInputChange,
   ruleIndex,
-  ruleData,
   index,
   currConditionData,
 }) => {
@@ -121,175 +115,173 @@ const PopoverSelect = ({
   );
 
   return (
-    <>
-      <Box position="fixed" minHeight="100vh" width="100%" insetBlockStart="0">
-        <Box background="bg-fill-critical-hover" position="relative">
-          <Box
-            width="100%"
-            position="absolute"
-            background="backdrop-bg"
-            minHeight="100vh"
-            onClick={() => handleInputChange("is_popover_select_show", false)}
-          ></Box>
+    <Box position="fixed" minHeight="100vh" width="100%" insetBlockStart="0">
+      <Box background="bg-fill-critical-hover" position="relative">
+        <Box
+          width="100%"
+          position="absolute"
+          background="backdrop-bg"
+          minHeight="100vh"
+          onClick={() => handleInputChange("is_popover_select_show", false)}
+        />
 
-          <Box position="relative">
-            <Box id="center_item" position="absolute">
+        <Box position="relative">
+          <Box id="center_item" position="absolute">
+            <Box
+              padding="0"
+              background="bg-surface"
+              width="40rem"
+              borderRadius="300"
+            >
               <Box
-                padding="0"
-                background="bg-surface"
-                width="40rem"
-                borderRadius="300"
+                padding="300"
+                borderStartStartRadius="300"
+                borderStartEndRadius="300"
+                background="bg-fill-active"
               >
-                <Box
-                  padding="300"
-                  borderStartStartRadius="300"
-                  borderStartEndRadius="300"
-                  background="bg-fill-active"
-                >
-                  <InlineStack align="space-between">
-                    <Text variant="headingMd">Select collections</Text>
-                    <Box
+                <InlineStack align="space-between">
+                  <Text variant="headingMd">Select collections</Text>
+                  <Box
+                    onClick={() =>
+                      handleInputChange("is_popover_select_show", false)
+                    }
+                  >
+                    <Icon source={XIcon} tone="base" />
+                  </Box>
+                </InlineStack>
+              </Box>
+
+              <Box minHeight="75vh" id="resource_list">
+                <ResourceList
+                  showHeader={false}
+                  items={popoverSelectData.field_item}
+                  renderItem={renderItem}
+                  selectedItems={popoverSelectData.selectedItems}
+                  onSelectionChange={(value) =>
+                    handlePopoverInputChange("selectedItems", value)
+                  }
+                  selectable
+                  filterControl={
+                    <Box id="filter_header">
+                      <InlineStack gap="200" wrap={false}>
+                        <Box width="100%">
+                          <TextField
+                            prefix={<Icon source={SearchIcon} tone="base" />}
+                            autoComplete="off"
+                            value={popoverSelectData.search_field}
+                            onChange={updateText}
+                            placeholder="Search products"
+                          />
+                        </Box>
+
+                        {currConditionData.field_extra_filter && (
+                          <Box minWidth="35%">
+                            <Select
+                              labelHidden
+                              options={[
+                                {
+                                  label: "All",
+                                  value: "all",
+                                  prefix: (
+                                    <Text tone="subdued"> Search by</Text>
+                                  ),
+                                },
+                                {
+                                  label: "Product title",
+                                  value: "product_title",
+                                  prefix: (
+                                    <Text tone="subdued"> Search by</Text>
+                                  ),
+                                },
+                                {
+                                  label: "Product ID",
+                                  value: "product_id",
+                                  prefix: (
+                                    <Text tone="subdued"> Search by</Text>
+                                  ),
+                                },
+                                {
+                                  label: "Barcode",
+                                  value: "barcode",
+                                  prefix: (
+                                    <Text tone="subdued"> Search by</Text>
+                                  ),
+                                },
+                                {
+                                  label: "SKU",
+                                  value: "sku",
+                                  prefix: (
+                                    <Text tone="subdued"> Search by</Text>
+                                  ),
+                                },
+                              ]}
+                              value={popoverSelectData.filter_type}
+                              onChange={(val) => {
+                                handlePopoverInputChange("filter_type", val);
+                              }}
+                            />
+                          </Box>
+                        )}
+                      </InlineStack>
+                      {currConditionData.field_extra_filter && (
+                        <PopoverSelectFilter
+                          escapeSpecialRegExCharacters={
+                            escapeSpecialRegExCharacters
+                          }
+                          currConditionData={currConditionData}
+                          tags={tags}
+                          collection={collection}
+                          popoverSelectData={popoverSelectData}
+                          handlePopoverInputChange={handlePopoverInputChange}
+                        />
+                      )}
+                    </Box>
+                  }
+                />
+              </Box>
+
+              <Box
+                padding="300"
+                borderBlockStartWidth="025"
+                borderColor="border"
+              >
+                <InlineStack align="space-between">
+                  <Text>
+                    {popoverSelectData.selectedItems.length} collections
+                    selected
+                  </Text>
+                  <InlineStack gap="200">
+                    <Button
                       onClick={() =>
                         handleInputChange("is_popover_select_show", false)
                       }
                     >
-                      <Icon source={XIcon} tone="base" />
-                    </Box>
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        handleInputChange("is_popover_select_show", false);
+                        handleInputChange(
+                          "value",
+                          popoverSelectData.selectedItems,
+                          ruleIndex,
+                          "tiers",
+                          index,
+                          "conditions"
+                        );
+                      }}
+                    >
+                      Select
+                    </Button>
                   </InlineStack>
-                </Box>
-
-                <Box minHeight="75vh" id="resource_list">
-                  <ResourceList
-                    showHeader={false}
-                    items={popoverSelectData.field_item}
-                    renderItem={renderItem}
-                    selectedItems={popoverSelectData.selectedItems}
-                    onSelectionChange={(value) =>
-                      handlePopoverInputChange("selectedItems", value)
-                    }
-                    selectable
-                    filterControl={
-                      <Box id="filter_header">
-                        <InlineStack gap="200" wrap={false}>
-                          <Box width="100%">
-                            <TextField
-                              prefix={<Icon source={SearchIcon} tone="base" />}
-                              autoComplete="off"
-                              value={popoverSelectData.search_field}
-                              onChange={updateText}
-                              placeholder="Search products"
-                            />
-                          </Box>
-
-                          {currConditionData.field_extra_filter && (
-                            <Box minWidth="35%">
-                              <Select
-                                labelHidden
-                                options={[
-                                  {
-                                    label: "All",
-                                    value: "all",
-                                    prefix: (
-                                      <Text tone="subdued"> Search by</Text>
-                                    ),
-                                  },
-                                  {
-                                    label: "Product title",
-                                    value: "product_title",
-                                    prefix: (
-                                      <Text tone="subdued"> Search by</Text>
-                                    ),
-                                  },
-                                  {
-                                    label: "Product ID",
-                                    value: "product_id",
-                                    prefix: (
-                                      <Text tone="subdued"> Search by</Text>
-                                    ),
-                                  },
-                                  {
-                                    label: "Barcode",
-                                    value: "barcode",
-                                    prefix: (
-                                      <Text tone="subdued"> Search by</Text>
-                                    ),
-                                  },
-                                  {
-                                    label: "SKU",
-                                    value: "sku",
-                                    prefix: (
-                                      <Text tone="subdued"> Search by</Text>
-                                    ),
-                                  },
-                                ]}
-                                value={popoverSelectData.filter_type}
-                                onChange={(val) => {
-                                  handlePopoverInputChange("filter_type", val);
-                                }}
-                              />
-                            </Box>
-                          )}
-                        </InlineStack>
-                        {currConditionData.field_extra_filter && (
-                          <PopoverSelectFilter
-                            escapeSpecialRegExCharacters={
-                              escapeSpecialRegExCharacters
-                            }
-                            currConditionData={currConditionData}
-                            tags={tags}
-                            collection={collection}
-                            popoverSelectData={popoverSelectData}
-                            handlePopoverInputChange={handlePopoverInputChange}
-                          />
-                        )}
-                      </Box>
-                    }
-                  />
-                </Box>
-
-                <Box
-                  padding="300"
-                  borderBlockStartWidth="025"
-                  borderColor="border"
-                >
-                  <InlineStack align="space-between">
-                    <Text>
-                      {popoverSelectData.selectedItems.length} collections
-                      selected
-                    </Text>
-                    <InlineStack gap="200">
-                      <Button
-                        onClick={() =>
-                          handleInputChange("is_popover_select_show", false)
-                        }
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        variant="primary"
-                        onClick={() => {
-                          handleInputChange("is_popover_select_show", false);
-                          handleInputChange(
-                            "value",
-                            popoverSelectData.selectedItems,
-                            ruleIndex,
-                            "tiers",
-                            index,
-                            "conditions"
-                          );
-                        }}
-                      >
-                        Select
-                      </Button>
-                    </InlineStack>
-                  </InlineStack>
-                </Box>
+                </InlineStack>
               </Box>
             </Box>
           </Box>
         </Box>
       </Box>
-    </>
+    </Box>
   );
 
   function renderItem(item) {

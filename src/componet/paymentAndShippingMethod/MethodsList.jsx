@@ -1,20 +1,9 @@
+import React from "react";
+
 import { DndContext } from "@dnd-kit/core";
 import { arrayMove, SortableContext, useSortable } from "@dnd-kit/sortable";
-import {
-  Box,
-  Button,
-  Divider,
-  Icon,
-  InlineStack,
-  Text,
-  TextField,
-} from "@shopify/polaris";
-import React from "react";
-import {
-  ArrowDownIcon,
-  ArrowUpIcon,
-  MenuVerticalIcon,
-} from "@shopify/polaris-icons";
+import { Box, Button, Icon, InlineStack, Text } from "@shopify/polaris";
+import { ArrowDownIcon, ArrowUpIcon } from "@shopify/polaris-icons";
 import { PiDotsSixVerticalLight } from "react-icons/pi";
 
 const MethodsList = ({
@@ -22,7 +11,6 @@ const MethodsList = ({
   ruleData,
   ruleIndex,
   list_name,
-  updataPaymentMethodName,
   removeTag,
   handleInputChange,
 }) => {
@@ -30,8 +18,8 @@ const MethodsList = ({
     return (
       <InlineStack
         blockAlign={
-          currDisplayData.display.includes("payment-method-rename") ||
-          currDisplayData.display.includes("shipping-method-rename")
+          currDisplayData.display?.includes("payment-method-rename") ||
+          currDisplayData.display?.includes("shipping-method-rename")
             ? "end"
             : "center"
         }
@@ -126,9 +114,7 @@ const MethodsList = ({
         >
           {ruleData.tiers[ruleIndex][list_name]?.map((currItem, index) => {
             return (
-              <>
-                <SortableItem key={index} index={index} currItem={currItem} />
-              </>
+              <SortableItem key={index} index={index} currItem={currItem} />
             );
           })}
         </SortableContext>

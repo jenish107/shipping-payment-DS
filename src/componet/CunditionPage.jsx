@@ -1,3 +1,5 @@
+import React, { useEffect, useState } from "react";
+
 import {
   BlockStack,
   Box,
@@ -11,8 +13,7 @@ import {
   Text,
   TextField,
 } from "@shopify/polaris";
-import React, { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import RulesCard from "./rules/RulesCard.jsx";
 import PopoverSelect from "./popoverSelect/PopoverSelect.jsx";
 import { AdvanceOptions, dashBordData } from "../data/DashBordData.jsx";
@@ -76,7 +77,7 @@ const CunditionPage = () => {
     ],
     rule_type: "basic",
   });
-  const [currDisplayData, setCurrDisplayData] = useState();
+  const [currDisplayData, setCurrDisplayData] = useState({});
   const params = useParams();
 
   useEffect(() => {

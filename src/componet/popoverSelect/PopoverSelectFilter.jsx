@@ -1,5 +1,6 @@
-import { ChoiceList, Filters, TextField } from "@shopify/polaris";
 import React, { useCallback, useEffect } from "react";
+
+import { ChoiceList, Filters, TextField } from "@shopify/polaris";
 
 const PopoverSelectFilter = ({
   popoverSelectData,
@@ -148,33 +149,33 @@ const PopoverSelectFilter = ({
 
     if (popoverSelectData.categories?.length > 0) {
       resultOptions = resultOptions?.filter((currData) => {
-        return currData.category.includes(popoverSelectData.categories[0]);
+        return currData.category?.includes(popoverSelectData.categories[0]);
       });
     }
 
     if (popoverSelectData.collection?.length > 0) {
       resultOptions = resultOptions?.filter((currData) => {
-        return currData.collections.includes(popoverSelectData.collection[0]);
+        return currData.collections?.includes(popoverSelectData.collection[0]);
       });
     }
 
     if (popoverSelectData.types?.length > 0) {
       resultOptions = resultOptions?.filter((currData) => {
-        return popoverSelectData.types.includes(currData.type);
+        return popoverSelectData.types?.includes(currData.type);
       });
     }
 
     if (popoverSelectData.tags?.length > 0) {
       resultOptions = resultOptions?.filter((currData) => {
         return popoverSelectData.tags.some((currTag) =>
-          currData.tags.includes(currTag)
+          currData.tags?.includes(currTag)
         );
       });
     }
 
     if (popoverSelectData.vendors?.length > 0) {
       resultOptions = resultOptions?.filter((currData) => {
-        return currData.vendor.includes(popoverSelectData.vendors);
+        return currData.vendor?.includes(popoverSelectData.vendors);
       });
     }
 

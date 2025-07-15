@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { conditionFieldsOptions } from "../../data/ConditionFieldsOptions";
+
 import {
   Box,
   Button,
@@ -10,13 +10,13 @@ import {
   Listbox,
   RadioButton,
   Select,
-  Tag,
   Text,
   TextField,
 } from "@shopify/polaris";
+import { conditionFieldsOptions } from "../../data/ConditionFieldsOptions";
 
-import "../../style/PaymentAndShippingMethods.css";
 import { shippingAndPaymentData } from "../../data/ShippingAndPaymentData";
+import "../../style/PaymentAndShippingMethods.css";
 import MethodsList from "./MethodsList";
 
 const PaymentAndShippingMethods = ({
@@ -27,7 +27,7 @@ const PaymentAndShippingMethods = ({
   method,
 }) => {
   const [paymentOption, setPaymentOption] = useState(
-    currDisplayData?.display.includes("payment-method-adder") &&
+    currDisplayData?.display?.includes("payment-method-adder") &&
       conditionFieldsOptions.PaymentMethods
   );
 
@@ -41,7 +41,7 @@ const PaymentAndShippingMethods = ({
 
   useEffect(() => {
     setPaymentOption(
-      currDisplayData?.display.includes("payment-method-adder") &&
+      currDisplayData?.display?.includes("payment-method-adder") &&
         conditionFieldsOptions.PaymentMethods
     );
   }, [currDisplayData]);
@@ -50,7 +50,7 @@ const PaymentAndShippingMethods = ({
     (value) => {
       handleInputChange(field_name, value, ruleIndex, "tiers");
 
-      if (currDisplayData?.display.includes("payment-method-adder")) {
+      if (currDisplayData?.display?.includes("payment-method-adder")) {
         if (value === "") {
           setPaymentOption(conditionFieldsOptions.PaymentMethods);
           return;
@@ -60,6 +60,7 @@ const PaymentAndShippingMethods = ({
           escapeSpecialRegExCharacters(value),
           "i"
         );
+
         const resultOptions = conditionFieldsOptions.PaymentMethods.filter(
           (option) => option.label.match(filterRegex)
         );
@@ -92,7 +93,6 @@ const PaymentAndShippingMethods = ({
           let selectedValueList = ruleData.tiers[ruleIndex][list_name].filter(
             (option) => option.key !== selected
           );
-
           handleInputChange(list_name, selectedValueList, ruleIndex, "tiers");
         }
       } else {
@@ -211,31 +211,31 @@ const PaymentAndShippingMethods = ({
         <Divider />
       </Box>
 
-      {currDisplayData?.display.includes("payment-method-hide-show") ||
-        (currDisplayData?.display.includes("shipping-method-hide-show") && (
-          <Box paddingBlock="200">
-            <Select
-              options={[
-                {
-                  label: "Hide these Payment methods",
-                  value: "Hide these Payment methods",
-                },
-                {
-                  label: "Show these Payment methods",
-                  value: "Show these Payment methods",
-                },
-                {
-                  label: "Hide all Payment methods",
-                  value: "hide_all_method",
-                },
-              ]}
-              onChange={(value) =>
-                handleInputChange("method_hide_show", value, ruleIndex, "tiers")
-              }
-              value={ruleData.tiers[ruleIndex].method_hide_show}
-            />
-          </Box>
-        ))}
+      {(currDisplayData?.display?.includes("payment-method-hide-show") ||
+        currDisplayData?.display?.includes("shipping-method-hide-show")) && (
+        <Box paddingBlock="200">
+          <Select
+            options={[
+              {
+                label: "Hide these Payment methods",
+                value: "Hide these Payment methods",
+              },
+              {
+                label: "Show these Payment methods",
+                value: "Show these Payment methods",
+              },
+              {
+                label: "Hide all Payment methods",
+                value: "hide_all_method",
+              },
+            ]}
+            onChange={(value) =>
+              handleInputChange("method_hide_show", value, ruleIndex, "tiers")
+            }
+            value={ruleData.tiers[ruleIndex].method_hide_show}
+          />
+        </Box>
+      )}
 
       {ruleData.tiers[ruleIndex].method_hide_show !== "hide_all_method" && (
         <InlineStack wrap={false} blockAlign="center" gap="100">
@@ -254,7 +254,7 @@ const PaymentAndShippingMethods = ({
                 />
               }
             >
-              {currDisplayData?.display.includes("payment-method-adder") ? (
+              {currDisplayData?.display?.includes("payment-method-adder") ? (
                 <Listbox onSelect={updateSelection}>
                   {optionsMarkup}
 
@@ -271,11 +271,11 @@ const PaymentAndShippingMethods = ({
                     </Listbox.Option>
                   )}
                 </Listbox>
-              ): null}
+              ) : null}
             </Combobox>
           </Box>
 
-          {currDisplayData?.display.includes("shipping-method-adder") && (
+          {currDisplayData?.display?.includes("shipping-method-adder") && (
             <Box minWidth="10rem">
               <Button
                 disabled={
@@ -296,82 +296,86 @@ const PaymentAndShippingMethods = ({
       )}
 
       <Box paddingBlockStart="200">
-        <Card padding="0">
-          {currDisplayData?.display?.includes("payment-method-move") ||
-          currDisplayData?.display?.includes("shipping-method-move") ? (
-            <MethodsList
-              handleInputChange={handleInputChange}
-              currDisplayData={currDisplayData}
-              ruleData={ruleData}
-              ruleIndex={ruleIndex}
-              list_name={list_name}
-              updataPaymentMethodName={updataPaymentMethodName}
-              removeTag={removeTag}
-            />
-          ) : (
-            ruleData.tiers[ruleIndex][list_name]?.map((currItem, index) => {
-              return (
-                <Box padding="300">
-                  <InlineStack
-                    blockAlign={
-                      currDisplayData.display.includes(
+        {ruleData.tiers[ruleIndex].method_hide_show !== "hide_all_method" && (
+          <Card padding="0">
+            {currDisplayData?.display?.includes("payment-method-move") ||
+            currDisplayData?.display?.includes("shipping-method-move") ? (
+              <MethodsList
+                handleInputChange={handleInputChange}
+                currDisplayData={currDisplayData}
+                ruleData={ruleData}
+                ruleIndex={ruleIndex}
+                list_name={list_name}
+                updataPaymentMethodName={updataPaymentMethodName}
+                removeTag={removeTag}
+              />
+            ) : (
+              ruleData.tiers[ruleIndex][list_name]?.map((currItem, index) => {
+                return (
+                  <Box padding="300">
+                    <InlineStack
+                      blockAlign={
+                        currDisplayData.display?.includes(
+                          "payment-method-rename"
+                        ) ||
+                        currDisplayData.display?.includes(
+                          "shipping-method-rename"
+                        )
+                          ? "end"
+                          : "center"
+                      }
+                      wrap={false}
+                      gap="300"
+                      align="space-between"
+                    >
+                      {currDisplayData.display?.includes(
                         "payment-method-rename"
                       ) ||
-                      currDisplayData.display.includes("shipping-method-rename")
-                        ? "end"
-                        : "center"
-                    }
-                    wrap={false}
-                    gap="300"
-                    align="space-between"
-                  >
-                    {currDisplayData.display.includes(
-                      "payment-method-rename"
-                    ) ||
-                    currDisplayData.display.includes(
-                      "shipping-method-rename"
-                    ) ? (
-                      <Box width="100%">
-                        <InlineStack wrap={false} gap="300">
-                          <Box width="100%">
-                            <TextField
-                              label="Old name"
-                              value={currItem.key}
-                              disabled
-                            />
-                          </Box>
+                      currDisplayData.display?.includes(
+                        "shipping-method-rename"
+                      ) ? (
+                        <Box width="100%">
+                          <InlineStack wrap={false} gap="300">
+                            <Box width="100%">
+                              <TextField
+                                label="Old name"
+                                value={currItem.key}
+                                disabled
+                              />
+                            </Box>
 
-                          <Box width="100%">
-                            <TextField
-                              label="New name"
-                              value={
-                                ruleData.tiers[ruleIndex][list_name][index]
-                                  .value
-                              }
-                              onChange={(val) =>
-                                updataPaymentMethodName(val, index)
-                              }
-                            />
-                          </Box>
-                        </InlineStack>
-                      </Box>
-                    ) : (
-                      <Text>{currItem.key}</Text>
-                    )}
+                            <Box width="100%">
+                              <TextField
+                                label="New name"
+                                value={
+                                  ruleData.tiers[ruleIndex][list_name][index]
+                                    .value
+                                }
+                                onChange={(val) =>
+                                  updataPaymentMethodName(val, index)
+                                }
+                              />
+                            </Box>
+                          </InlineStack>
+                        </Box>
+                      ) : (
+                        <Text>{currItem.key}</Text>
+                      )}
 
-                    <Button
-                      onClick={removeTag(index)}
-                      variant="primary"
-                      tone="critical"
-                    >
-                      Delete
-                    </Button>
-                  </InlineStack>
-                </Box>
-              );
-            })
-          )}
-        </Card>
+                      <Button
+                        onClick={removeTag(index)}
+                        variant="primary"
+                        tone="critical"
+                      >
+                        Delete
+                      </Button>
+                    </InlineStack>
+                  </Box>
+                );
+              })
+            )}
+          </Card>
+        )}
       </Box>
     </Box>
   );
