@@ -19,67 +19,10 @@ import PopoverSelect from "./popoverSelect/PopoverSelect.jsx";
 import { AdvanceOptions, dashBordData } from "../data/DashBordData.jsx";
 
 const CunditionPage = () => {
-  const [ruleData, setRuleData] = useState({
-    tiers: [
-      {
-        payment_method: [],
-        conditions: [
-          {
-            value_1: "",
-            value: "",
-            condition: null,
-            type: "Always",
-          },
-        ],
-        payment_method_options: [
-          {
-            key: "Cash on Delivery (COD)",
-            value: "Cash on Delivery (COD)",
-          },
-          {
-            key: "Bank Deposit",
-            value: "Bank Deposit",
-          },
-          {
-            key: "Money Order",
-            value: "Money Order",
-          },
-          {
-            key: "Shopify Payments",
-            value: "Shopify Payments",
-          },
-          {
-            key: "Stripe",
-            value: "Stripe",
-          },
-          {
-            key: "Gift card",
-            value: "Gift card",
-          },
-          {
-            key: "Redeemable payment method",
-            value: "Redeemable payment method",
-          },
-          {
-            key: "PayPal",
-            value: "PayPal",
-          },
-          {
-            key: "PayPal Express Checkout",
-            value: "PayPal Express Checkout",
-          },
-          {
-            key: "Amazon Pay",
-            value: "Amazon Pay",
-          },
-        ],
-        payment_method_condition: "Contains",
-        payment_method_field_value: "",
-        rule_cundition: "and",
-      },
-    ],
-    rule_type: "basic",
-  });
+  const [ruleList, setRuleList] = useState(
+    JSON.parse(localStorage.getItem("ruleList")) || []
+  );
+  const [ruleData, setRuleData] = useState({});
   const [currDisplayData, setCurrDisplayData] = useState({});
   const params = useParams();
 
@@ -155,6 +98,97 @@ const CunditionPage = () => {
       }
     });
   };
+
+  const handleSaveButton = () => {
+    if (ruleList[params.ruleIndex] !== undefined) {
+      setRuleList((pre) => {
+        let temp = pre.map((currItem, index) => {
+          if (index === params.ruleIndex) {
+            return { ...currItem, ruleData: ruleData };
+          }
+          return currItem;
+        });
+        return temp;
+      });
+    } else {
+      setRuleList((pre) => [
+        ...pre,
+        { ruleData: ruleData, cardTitle: params.title },
+      ]);
+    }
+  };
+
+  useEffect(() => {
+    if (ruleList[params.ruleIndex] !== undefined) {
+      setRuleData(ruleList[params.ruleIndex].ruleData);
+    } else {
+      setRuleData({
+        tiers: [
+          {
+            payment_method: [],
+            conditions: [
+              {
+                value_1: "",
+                value: "",
+                condition: null,
+                type: "Always",
+              },
+            ],
+            payment_method_options: [
+              {
+                key: "Cash on Delivery (COD)",
+                value: "Cash on Delivery (COD)",
+              },
+              {
+                key: "Bank Deposit",
+                value: "Bank Deposit",
+              },
+              {
+                key: "Money Order",
+                value: "Money Order",
+              },
+              {
+                key: "Shopify Payments",
+                value: "Shopify Payments",
+              },
+              {
+                key: "Stripe",
+                value: "Stripe",
+              },
+              {
+                key: "Gift card",
+                value: "Gift card",
+              },
+              {
+                key: "Redeemable payment method",
+                value: "Redeemable payment method",
+              },
+              {
+                key: "PayPal",
+                value: "PayPal",
+              },
+              {
+                key: "PayPal Express Checkout",
+                value: "PayPal Express Checkout",
+              },
+              {
+                key: "Amazon Pay",
+                value: "Amazon Pay",
+              },
+            ],
+            payment_method_condition: "Contains",
+            payment_method_field_value: "",
+            rule_cundition: "and",
+          },
+        ],
+        rule_type: "basic",
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("ruleList", JSON.stringify(ruleList));
+  }, [ruleList]);
 
   return (
     <>
@@ -265,6 +299,8 @@ const CunditionPage = () => {
               />
             </Card>
           )}
+
+          <Button onClick={handleSaveButton}>Save</Button>
         </BlockStack>
       </Page>
 

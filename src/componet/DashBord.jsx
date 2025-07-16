@@ -1,10 +1,11 @@
 import { Box, Button, Grid, InlineStack, Page, Text } from "@shopify/polaris";
 import { NoteIcon } from "@shopify/polaris-icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { dashBordData } from "../data/DashBordData.jsx";
 
 export default function DeshBord() {
+  const param = useParams();
   const navigat = useNavigate();
   return (
     <Page compactTitle>
@@ -27,7 +28,11 @@ export default function DeshBord() {
                   </Button>
                   <Button
                     variant="plain"
-                    onClick={() => navigat(`/rules-page/${currData.title}`)}
+                    onClick={() =>
+                      navigat(
+                        `/rules-page/${currData.title}/${param.ruleIndex}`
+                      )
+                    }
                   >
                     Configure
                   </Button>
