@@ -25,6 +25,8 @@ const PaymentAndShippingMethods = ({
   ruleIndex,
   currDisplayData,
   method,
+  isShowError,
+  setIsShowError,
 }) => {
   const [paymentOption, setPaymentOption] = useState(
     currDisplayData?.display?.includes("payment-method-adder") &&
@@ -81,6 +83,9 @@ const PaymentAndShippingMethods = ({
 
   const updateSelection = useCallback(
     (selected) => {
+      if (ruleData.tiers[ruleData.tiers.length - 1][list_name].length < 1) {
+        setIsShowError((pre) => ({ ...pre, paymentError: false }));
+      }
       if (selected == "") {
         return;
       }
@@ -167,7 +172,6 @@ const PaymentAndShippingMethods = ({
             }
           />
         </Box>
-
         <Box minWidth="30%">
           <RadioButton
             label="Exact (Case-Sensitive)"
@@ -186,7 +190,6 @@ const PaymentAndShippingMethods = ({
             }
           />
         </Box>
-
         <Box minWidth="30%">
           <RadioButton
             label="Exact (Non Case)"
@@ -244,6 +247,11 @@ const PaymentAndShippingMethods = ({
               allowMultiple
               activator={
                 <Combobox.TextField
+                  error={
+                    isShowError.paymentError
+                      ? "Enter at least one method"
+                      : null
+                  }
                   onChange={updateText}
                   value={ruleData.tiers[ruleIndex][field_name]}
                   label={label}

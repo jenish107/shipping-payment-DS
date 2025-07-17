@@ -17,6 +17,11 @@ import { useParams } from "react-router-dom";
 import RulesCard from "./rules/RulesCard.jsx";
 import PopoverSelect from "./popoverSelect/PopoverSelect.jsx";
 import { AdvanceOptions, dashBordData } from "../data/DashBordData.jsx";
+import DiscountCombiner from "./DiscountCombiner.jsx";
+import TitleCard from "./TitleCard.jsx";
+import RuleTypeSelect from "./RuleTypeSelect.jsx";
+import { conditionFieldsOptions } from "../data/ConditionFieldsOptions.jsx";
+import ErrorBanner from "./ErrorBanner.jsx";
 
 const CunditionPage = () => {
   const [ruleList, setRuleList] = useState(
@@ -24,6 +29,12 @@ const CunditionPage = () => {
   );
   const [ruleData, setRuleData] = useState({});
   const [currDisplayData, setCurrDisplayData] = useState({});
+  const [isShowError, setIsShowError] = useState({
+    titleError: false,
+    paymentError: false,
+    valueError: false,
+    value1Error: false,
+  });
   const params = useParams();
 
   useEffect(() => {
@@ -98,8 +109,55 @@ const CunditionPage = () => {
       }
     });
   };
+  const chackIsFieldEmpty = () => {
+    let list_name = currDisplayData?.display?.includes("payment-method-adder")
+      ? "payment_method"
+      : "shipping_method";
+
+    let isError = false;
+    if (ruleData?.Title == "" || ruleData.Title == undefined) {
+      setIsShowError((pre) => ({ ...pre, titleError: true }));
+      isError = true;
+    }
+
+    ruleData.tiers?.map((currItem) => {
+      currItem.conditions?.map((currCondition) => {
+        if (
+          currCondition.type !== "Always" &&
+          (currCondition.value == "" || currCondition.value == null)
+        ) {
+          setIsShowError((pre) => ({ ...pre, valueError: true }));
+          isError = true;
+        }
+        if (
+          currCondition.condition == "Is between" &&
+          (currCondition.value_1 == "" || currCondition.value_1 == null)
+        ) {
+          setIsShowError((pre) => ({ ...pre, value1Error: true }));
+          isError = true;
+        }
+      });
+      if (currItem[list_name].length < 1) {
+        setIsShowError((pre) => ({ ...pre, paymentError: true }));
+        isError = true;
+      }
+    });
+
+    ruleData.tiers?.map((currItem) => {
+      if (currItem[list_name].length < 1) {
+        setIsShowError((pre) => ({ ...pre, paymentError: true }));
+        isError = true;
+      }
+    });
+
+    if (isError) {
+      return true;
+    }
+  };
 
   const handleSaveButton = () => {
+    if (chackIsFieldEmpty() == true) return;
+
     if (ruleList[params.ruleIndex] !== undefined) {
       setRuleList((pre) => {
         let temp = pre.map((currItem, index) => {
@@ -118,6 +176,14 @@ const CunditionPage = () => {
     }
   };
 
+  const handleAddNewRule = () => {
+    if (chackIsFieldEmpty() == true) return;
+    handleInputChange("tiers", [
+      ...ruleData.tiers,
+      { payment_method: [], conditions: [{}] },
+    ]);
+  };
+
   useEffect(() => {
     if (ruleList[params.ruleIndex] !== undefined) {
       setRuleData(ruleList[params.ruleIndex].ruleData);
@@ -134,48 +200,9 @@ const CunditionPage = () => {
                 type: "Always",
               },
             ],
-            payment_method_options: [
-              {
-                key: "Cash on Delivery (COD)",
-                value: "Cash on Delivery (COD)",
-              },
-              {
-                key: "Bank Deposit",
-                value: "Bank Deposit",
-              },
-              {
-                key: "Money Order",
-                value: "Money Order",
-              },
-              {
-                key: "Shopify Payments",
-                value: "Shopify Payments",
-              },
-              {
-                key: "Stripe",
-                value: "Stripe",
-              },
-              {
-                key: "Gift card",
-                value: "Gift card",
-              },
-              {
-                key: "Redeemable payment method",
-                value: "Redeemable payment method",
-              },
-              {
-                key: "PayPal",
-                value: "PayPal",
-              },
-              {
-                key: "PayPal Express Checkout",
-                value: "PayPal Express Checkout",
-              },
-              {
-                key: "Amazon Pay",
-                value: "Amazon Pay",
-              },
-            ],
+            payment_method_options: conditionFieldsOptions.PaymentMethods.map(
+              (currOption) => ({ ...currOption, key: currOption.label })
+            ),
             payment_method_condition: "Contains",
             payment_method_field_value: "",
             rule_cundition: "and",
@@ -190,35 +217,20 @@ const CunditionPage = () => {
     localStorage.setItem("ruleList", JSON.stringify(ruleList));
   }, [ruleList]);
 
+  console.log("isshow error --------", isShowError);
   return (
     <>
       <Page compactTitle>
         <BlockStack gap="200">
-          <Card>
-            <TextField
-              onChange={(v) => handleInputChange("Title", v)}
-              value={ruleData?.Title}
-              label="Title (Internal Use)"
-            />
+          {Object.values(isShowError).includes(true) && <ErrorBanner />}
 
-            <Select
-              onChange={(v) => handleInputChange("Status", v)}
-              value={ruleData?.Status}
-              label="Status"
-              options={[
-                { label: "Inactive", value: "Inactive" },
-                { label: "Active", value: "active" },
-              ]}
-            />
-
-            {currDisplayData?.display?.includes("discount-code") && (
-              <TextField
-                onChange={(v) => handleInputChange("discount_code", v)}
-                value={ruleData?.discount_code}
-                label="Discount code"
-              />
-            )}
-          </Card>
+          <TitleCard
+            handleInputChange={handleInputChange}
+            setIsShowError={setIsShowError}
+            ruleData={ruleData}
+            isShowError={isShowError}
+            currDisplayData={currDisplayData}
+          />
 
           <Card>
             <Text variant="headingMd" as="h6">
@@ -226,22 +238,10 @@ const CunditionPage = () => {
             </Text>
 
             {currDisplayData?.display?.includes("rule-type-select") && (
-              <Box paddingBlockStart="300">
-                <ButtonGroup variant="segmented">
-                  <Button
-                    pressed={ruleData.rule_type === "basic"}
-                    onClick={() => handleInputChange("rule_type", "basic")}
-                  >
-                    Basic
-                  </Button>
-                  <Button
-                    pressed={ruleData.rule_type === "advance"}
-                    onClick={() => handleInputChange("rule_type", "advance")}
-                  >
-                    Advance
-                  </Button>
-                </ButtonGroup>
-              </Box>
+              <RuleTypeSelect
+                ruleData={ruleData}
+                handleInputChange={handleInputChange}
+              />
             )}
 
             <Box paddingBlock="300">
@@ -258,6 +258,9 @@ const CunditionPage = () => {
                     ruleIndex={ruleIndex}
                     handleInputChange={handleInputChange}
                     ruleData={ruleData}
+                    isShowError={isShowError}
+                    setIsShowError={setIsShowError}
+                    chackIsFieldEmpty={chackIsFieldEmpty}
                   />
                 );
               })}
@@ -266,38 +269,17 @@ const CunditionPage = () => {
             <Box paddingBlock="300">
               <Divider />
             </Box>
-            <Button
-              variant="primary"
-              onClick={() =>
-                handleInputChange("tiers", [
-                  ...ruleData.tiers,
-                  { payment_method: [], conditions: [{}] },
-                ])
-              }
-            >
+
+            <Button variant="primary" onClick={handleAddNewRule}>
               Add another rule
             </Button>
           </Card>
 
           {currDisplayData?.display?.includes("discount-combiner") && (
-            <Card>
-              <ChoiceList
-                allowMultiple
-                title="This discount can be combined with:"
-                choices={[
-                  {
-                    label: "Product discounts",
-                    value: "product_discount",
-                  },
-                  {
-                    label: "Order discounts",
-                    value: "order_discount",
-                  },
-                ]}
-                selected={ruleData.discount_combine || "none"}
-                onChange={(val) => handleInputChange("discount_combine", val)}
-              />
-            </Card>
+            <DiscountCombiner
+              ruleData={ruleData}
+              handleInputChange={handleInputChange}
+            />
           )}
 
           <Button onClick={handleSaveButton}>Save</Button>

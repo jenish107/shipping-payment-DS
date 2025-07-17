@@ -16,7 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<RuleList />} />
           <Route path="/deshbord/:ruleIndex" element={<DeshBord />} />
-          <Route path="/rules-page/:title" element={<CunditionPage />} />
+          {/* <Route path="/rules-page/:title" element={<CunditionPage />} /> */}
           <Route
             path="/rules-page/:title/:ruleIndex"
             element={<CunditionPage />}

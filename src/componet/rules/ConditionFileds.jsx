@@ -18,6 +18,8 @@ const ConditionFileds = ({
   ruleIndex,
   currDisplayData,
   handleButtonUpDownClick,
+  isShowError,
+  setIsShowError,
 }) => {
   const [currConditionData, setCurrConditionData] = useState();
 
@@ -92,10 +94,17 @@ const ConditionFileds = ({
           {(currConditionData?.field_type == "text" ||
             currConditionData?.field_type == "number") && (
             <TextField
+              error={
+                isShowError.valueError &&
+                (currField.value === "" || currField.value === null)
+                  ? "This field is required"
+                  : null
+              }
               helpText={currConditionData?.helpText}
               type={currConditionData?.field_type}
               placeholder={currConditionData?.placeholder}
-              onChange={(value) =>
+              onChange={(value) => {
+                setIsShowError((pre) => ({ ...pre, valueError: false }));
                 handleInputChange(
                   currField?.type == "Cart Attribute" ? "key" : "value",
                   value,
@@ -103,8 +112,8 @@ const ConditionFileds = ({
                   "tiers",
                   index,
                   "conditions"
-                )
-              }
+                );
+              }}
               value={
                 currField?.type == "Cart Attribute"
                   ? currField?.key
@@ -116,6 +125,8 @@ const ConditionFileds = ({
           {(currConditionData?.field_type == "combo_box" ||
             currConditionData?.field_type == "popover_select") && (
             <CustomComboBox
+              setIsShowError={setIsShowError}
+              isShowError={isShowError}
               ruleIndex={ruleIndex}
               index={index}
               handleInputChange={handleInputChange}
@@ -126,11 +137,18 @@ const ConditionFileds = ({
 
           {currConditionData?.field_type == "choice_list" && (
             <ChoiceList
+              error={
+                isShowError.valueError &&
+                (currField.value === "" || currField.value === null)
+                  ? "This field is required"
+                  : null
+              }
               allowMultiple
               title="Delivery Method Type"
               choices={currConditionData?.field_option}
               selected={currField?.value}
-              onChange={(value) =>
+              onChange={(value) => {
+                setIsShowError((pre) => ({ ...pre, valueError: false }));
                 handleInputChange(
                   "value",
                   value,
@@ -138,8 +156,8 @@ const ConditionFileds = ({
                   "tiers",
                   index,
                   "conditions"
-                )
-              }
+                );
+              }}
             />
           )}
         </Box>
@@ -147,10 +165,17 @@ const ConditionFileds = ({
         {currField?.condition == "Is between" && (
           <Box paddingBlockStart="200" width="100%">
             <TextField
+              error={
+                isShowError.value1Error &&
+                (currField.value_1 === "" || currField.value_1 === null)
+                  ? "This field is required"
+                  : null
+              }
               helpText={currConditionData?.helpText}
               type={currConditionData?.field_type}
               placeholder={currConditionData?.placeholder}
-              onChange={(value) =>
+              onChange={(value) => {
+                setIsShowError((pre) => ({ ...pre, value1Error: false }));
                 handleInputChange(
                   "value_1",
                   value,
@@ -158,8 +183,8 @@ const ConditionFileds = ({
                   "tiers",
                   index,
                   "conditions"
-                )
-              }
+                );
+              }}
               value={currField?.value_1}
             />
           </Box>
@@ -168,6 +193,7 @@ const ConditionFileds = ({
         {currConditionData?.type == "Cart Attribute" && (
           <Box paddingBlockStart="200" width="100%">
             <CustomComboBox
+              setIsShowError={setIsShowError}
               ruleIndex={ruleIndex}
               index={index}
               handleInputChange={handleInputChange}

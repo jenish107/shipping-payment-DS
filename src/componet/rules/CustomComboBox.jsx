@@ -14,6 +14,8 @@ const CustomComboBox = ({
   ruleIndex,
   index,
   currConditionData,
+  isShowError,
+  setIsShowError,
 }) => {
   const { placeholder, field_type, combo_box_option, placeholder_2 } =
     currConditionData;
@@ -55,6 +57,8 @@ const CustomComboBox = ({
 
   const updateSelection = useCallback(
     (selected) => {
+      setIsShowError((pre) => ({ ...pre, valueError: true }));
+
       if (
         ruleData.tiers[ruleIndex].conditions[index].value?.includes(selected)
       ) {
@@ -148,6 +152,13 @@ const CustomComboBox = ({
       allowMultiple
       activator={
         <Combobox.TextField
+          error={
+            isShowError.valueError &&
+            (ruleData.tiers[ruleIndex].conditions[index].value?.length < 1 ||
+              ruleData.tiers[ruleIndex].conditions[index].value === null)
+              ? "This field is required"
+              : null
+          }
           onFocus={
             field_type == "popover_select" &&
             (() => {

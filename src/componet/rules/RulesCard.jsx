@@ -24,6 +24,7 @@ import {
 import { conditionFieldsOptions } from "../../data/ConditionFieldsOptions.jsx";
 import PaymentAndShippingMethods from "../paymentAndShippingMethod/PaymentAndShippingMethods.jsx";
 import ConditionFileds from "./ConditionFileds.jsx";
+import MessagePositionDisplay from "./MessagePositionDisplay.jsx";
 
 const RulesCard = ({
   handleInputChange,
@@ -31,6 +32,9 @@ const RulesCard = ({
   currData,
   ruleIndex,
   currDisplayData,
+  isShowError,
+  setIsShowError,
+  chackIsFieldEmpty,
 }) => {
   const handleCunditionDelete = (field_data) => {
     const filterCundition = currData.conditions.filter(
@@ -66,11 +70,32 @@ const RulesCard = ({
       conditionTemp[currRuleIndex] = conditionTemp[currRuleIndex + 1];
       conditionTemp[currRuleIndex + 1] = temp;
     }
-    console.table(conditionTemp);
 
     handleInputChange("conditions", conditionTemp, ruleIndex, "tiers");
   };
 
+  const handleNewConditionClick = () => {
+    if (chackIsFieldEmpty() == true) return;
+
+    setIsShowError(() => ({
+      titleError: false,
+      paymentError: false,
+      valueError: false,
+    }));
+    handleInputChange(
+      "conditions",
+      [
+        ...currData.conditions,
+        {
+          value_1: "",
+          value: null,
+          type: "Always",
+        },
+      ],
+      ruleIndex,
+      "tiers"
+    );
+  };
   return (
     <Card padding="0" key={`RulesCard${ruleIndex}`}>
       <Box padding="300" borderBlockEndWidth="025" borderColor="border">
@@ -163,8 +188,9 @@ const RulesCard = ({
                     ruleData={ruleData}
                     ruleIndex={ruleIndex}
                     handleInputChange={handleInputChange}
-                    currData={currData}
                     index={index}
+                    isShowError={isShowError}
+                    setIsShowError={setIsShowError}
                   />
                   {currData.conditions.length > 1 && (
                     <InlineStack align="space-between" blockAlign="center">
@@ -203,21 +229,7 @@ const RulesCard = ({
 
         <Button
           variant="primary"
-          onClick={() =>
-            handleInputChange(
-              "conditions",
-              [
-                ...currData.conditions,
-                {
-                  value_1: "",
-                  value: null,
-                  type: "Always",
-                },
-              ],
-              ruleIndex,
-              "tiers"
-            )
-          }
+          onClick={handleNewConditionClick}
           disabled={
             currData.conditions[0].type == "Always" ||
             currData.conditions[0].type == undefined
@@ -257,46 +269,12 @@ const RulesCard = ({
         )}
 
         {currDisplayData?.display?.includes("message-position-display") ? (
-          <Box padding="300">
-            <BlockStack gap="200">
-              <Select
-                label="Then block checkout and show a error message"
-                options={conditionFieldsOptions.error_message_position}
-                onChange={(val) =>
-                  handleInputChange(
-                    "show_error_message",
-                    val,
-                    ruleIndex,
-                    "tiers"
-                  )
-                }
-                helpText="Where to show the error message on the checkout page"
-                value={currData.show_error_message}
-              />
-
-              <Box paddingBlock="100">
-                <Divider />
-              </Box>
-
-              <Text variant="headingMd">Message to display</Text>
-              <Text>
-                This message will be displayed to customers who fail validation.
-              </Text>
-
-              <TextField
-                label={
-                  <InlineStack gap="100">
-                    <Text>English </Text>
-                    <Badge tone="success">Primary</Badge>
-                  </InlineStack>
-                }
-                value={currData.error_message}
-                onChange={(val) =>
-                  handleInputChange("error_message", val, ruleIndex, "tiers")
-                }
-              />
-            </BlockStack>
-          </Box>
+          <MessagePositionDisplay
+            handleInputChange={handleInputChange}
+            conditionFieldsOptions={conditionFieldsOptions}
+            ruleIndex={ruleIndex}
+            currData={currData}
+          />
         ) : (
           <PaymentAndShippingMethods
             method={
@@ -308,6 +286,8 @@ const RulesCard = ({
             ruleIndex={ruleIndex}
             ruleData={ruleData}
             handleInputChange={handleInputChange}
+            isShowError={isShowError}
+            setIsShowError={setIsShowError}
           />
         )}
       </Box>
