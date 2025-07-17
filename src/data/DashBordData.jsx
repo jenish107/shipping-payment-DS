@@ -57,7 +57,7 @@ export const AdvanceOptions = [
   },
   {
     ...options.address,
-    options: options.address.options.slice(0, 1),
+    options: options?.address.options?.slice(0, 1),
   },
 ];
 
@@ -92,7 +92,7 @@ export const dashBordData = [
         options.customer,
         {
           ...options.delivery,
-          options: options.delivery.options.slice(0, 1),
+          options: options?.delivery.options?.slice(0, 1),
         },
       ],
     },
@@ -111,7 +111,7 @@ export const dashBordData = [
         options.customer,
         {
           ...options.delivery,
-          options: options.delivery.options.slice(0, 1),
+          options: options?.delivery.options?.slice(0, 1),
         },
       ],
     },

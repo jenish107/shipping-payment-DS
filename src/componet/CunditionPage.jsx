@@ -137,14 +137,8 @@ const CunditionPage = () => {
           isError = true;
         }
       });
-      if (currItem[list_name].length < 1) {
-        setIsShowError((pre) => ({ ...pre, paymentError: true }));
-        isError = true;
-      }
-    });
 
-    ruleData.tiers?.map((currItem) => {
-      if (currItem[list_name].length < 1) {
+      if (currItem[list_name]?.length < 1 || currItem[list_name] == undefined) {
         setIsShowError((pre) => ({ ...pre, paymentError: true }));
         isError = true;
       }
@@ -161,7 +155,7 @@ const CunditionPage = () => {
     if (ruleList[params.ruleIndex] !== undefined) {
       setRuleList((pre) => {
         let temp = pre.map((currItem, index) => {
-          if (index === params.ruleIndex) {
+          if (index == params.ruleIndex) {
             return { ...currItem, ruleData: ruleData };
           }
           return currItem;
@@ -217,7 +211,6 @@ const CunditionPage = () => {
     localStorage.setItem("ruleList", JSON.stringify(ruleList));
   }, [ruleList]);
 
-  console.log("isshow error --------", isShowError);
   return (
     <>
       <Page compactTitle>

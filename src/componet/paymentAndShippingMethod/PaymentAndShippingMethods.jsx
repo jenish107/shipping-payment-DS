@@ -83,9 +83,8 @@ const PaymentAndShippingMethods = ({
 
   const updateSelection = useCallback(
     (selected) => {
-      if (ruleData.tiers[ruleData.tiers.length - 1][list_name].length < 1) {
-        setIsShowError((pre) => ({ ...pre, paymentError: false }));
-      }
+      setIsShowError((pre) => ({ ...pre, paymentError: false }));
+
       if (selected == "") {
         return;
       }
@@ -239,7 +238,6 @@ const PaymentAndShippingMethods = ({
           />
         </Box>
       )}
-
       {ruleData.tiers[ruleIndex].method_hide_show !== "hide_all_method" && (
         <InlineStack wrap={false} blockAlign="center" gap="100">
           <Box width="100%">
@@ -248,7 +246,9 @@ const PaymentAndShippingMethods = ({
               activator={
                 <Combobox.TextField
                   error={
-                    isShowError.paymentError
+                    isShowError.paymentError &&
+                    (ruleData.tiers[ruleIndex][field_name]?.length < 1 ||
+                      ruleData.tiers[ruleIndex][field_name] == undefined)
                       ? "Enter at least one method"
                       : null
                   }
